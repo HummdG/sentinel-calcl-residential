@@ -3,7 +3,14 @@
 import type { ReactNode } from 'react';
 import UploadZone from './UploadZone';
 import type { FormState } from '@/lib/form';
-import type { ExtractedFields, Tariff, Usage } from '@/lib/types';
+import type { ParsedPdfResponse, Tariff, Usage } from '@/lib/types';
+
+// A field the extractor could not find is marked distinctly from one it filled: a blank
+// that looks ordinary is how a stale value passes for an extracted one.
+function fieldClass(id: string, populated: Set<string>, missing?: Set<string>): string {
+  if (missing?.has(id)) return 'field pdf-missing';
+  return populated.has(id) ? 'field pdf-populated' : 'field';
+}
 
 interface NumFieldProps {
   id: keyof FormState;
@@ -11,6 +18,7 @@ interface NumFieldProps {
   form: FormState;
   setField: (id: keyof FormState, v: string) => void;
   populated: Set<string>;
+  missing?: Set<string>;
   step?: string;
   min?: string;
   unit?: string;
@@ -18,9 +26,9 @@ interface NumFieldProps {
   placeholder?: string;
 }
 
-function NumField({ id, label, form, setField, populated, step, min, unit, pre, placeholder }: NumFieldProps) {
+function NumField({ id, label, form, setField, populated, missing, step, min, unit, pre, placeholder }: NumFieldProps) {
   return (
-    <div className={`field${populated.has(id) ? ' pdf-populated' : ''}`}>
+    <div className={fieldClass(id, populated, missing)}>
       <label>{label}</label>
       <div className="frow">
         {pre && <span className="fpre">{pre}</span>}
@@ -44,12 +52,13 @@ interface TextFieldProps {
   form: FormState;
   setField: (id: keyof FormState, v: string) => void;
   populated: Set<string>;
+  missing?: Set<string>;
   placeholder?: string;
 }
 
-function TextField({ id, label, form, setField, populated, placeholder }: TextFieldProps) {
+function TextField({ id, label, form, setField, populated, missing, placeholder }: TextFieldProps) {
   return (
-    <div className={`field${populated.has(id) ? ' pdf-populated' : ''}`}>
+    <div className={fieldClass(id, populated, missing)}>
       <label>{label}</label>
       <div className="frow">
         <input
@@ -90,9 +99,12 @@ interface Props {
   onInflationSlider: (v: number) => void;
   onScenario: (v: number) => void;
   populated: Set<string>;
-  onExtracted: (fields: ExtractedFields) => void;
+  missing: Set<string>;
+  warnings: string[];
+  onExtracted: (data: ParsedPdfResponse) => void;
   onCalculate: () => void;
   calculating: boolean;
+  gaps: string[];
 }
 
 export default function InputForm({
@@ -107,9 +119,12 @@ export default function InputForm({
   onInflationSlider,
   onScenario,
   populated,
+  missing,
+  warnings,
   onExtracted,
   onCalculate,
   calculating,
+  gaps,
 }: Props) {
   return (
     <div id="inputs-section">
@@ -127,7 +142,7 @@ export default function InputForm({
           optional, all fields editable manually
         </span>
       </p>
-      <UploadZone onExtracted={onExtracted} />
+      <UploadZone onExtracted={onExtracted} warnings={warnings} />
 
       <hr />
 
@@ -140,6 +155,7 @@ export default function InputForm({
           form={form}
           setField={setField}
           populated={populated}
+          missing={missing}
           placeholder="e.g. John Smith"
         />
         <TextField
@@ -148,6 +164,7 @@ export default function InputForm({
           form={form}
           setField={setField}
           populated={populated}
+          missing={missing}
           placeholder="e.g. 12 High Street"
         />
       </div>
@@ -157,14 +174,14 @@ export default function InputForm({
       {/* SECTION A: SYSTEM SPEC */}
       <p className="slabel">System specification</p>
       <div className="igrid t4">
-        <NumField id="pv_size" label="Solar PV size" form={form} setField={setField} populated={populated} step="0.1" min="0" unit="kWp" />
-        <NumField id="battery_kwh" label="Battery capacity" form={form} setField={setField} populated={populated} step="0.5" min="0" unit="kWh" />
-        <NumField id="inverter_kw" label="Inverter power rating" form={form} setField={setField} populated={populated} step="0.1" min="0" unit="kW" />
-        <NumField id="annual_gen" label="Annual generation" form={form} setField={setField} populated={populated} step="100" min="0" unit="kWh/yr" />
+        <NumField id="pv_size" label="Solar PV size" form={form} setField={setField} populated={populated} missing={missing} step="0.1" min="0" unit="kWp" />
+        <NumField id="battery_kwh" label="Battery capacity" form={form} setField={setField} populated={populated} missing={missing} step="0.5" min="0" unit="kWh" />
+        <NumField id="inverter_kw" label="Inverter power rating" form={form} setField={setField} populated={populated} missing={missing} step="0.1" min="0" unit="kW" />
+        <NumField id="annual_gen" label="Annual generation" form={form} setField={setField} populated={populated} missing={missing} step="100" min="0" unit="kWh/yr" />
       </div>
       <div className="igrid">
-        <NumField id="annual_usage" label="Annual consumption" form={form} setField={setField} populated={populated} step="100" min="0" unit="kWh/yr" />
-        <NumField id="system_cost" label="Total system cost" form={form} setField={setField} populated={populated} step="100" min="0" pre="£" />
+        <NumField id="annual_usage" label="Annual consumption" form={form} setField={setField} populated={populated} missing={missing} step="100" min="0" unit="kWh/yr" />
+        <NumField id="system_cost" label="Total system cost" form={form} setField={setField} populated={populated} missing={missing} step="100" min="0" pre="£" />
       </div>
 
       <hr />
@@ -177,13 +194,13 @@ export default function InputForm({
         </span>
       </p>
       <div className="igrid t3">
-        <NumField id="solar_savings" label="Annual bill savings — yr 1" form={form} setField={setField} populated={populated} step="50" min="0" pre="£" />
-        <NumField id="export_kwh" label="Annual export to grid" form={form} setField={setField} populated={populated} step="100" min="0" unit="kWh/yr" />
-        <NumField id="os_payback" label="Payback period" form={form} setField={setField} populated={populated} step="0.1" min="0" unit="years" />
+        <NumField id="solar_savings" label="Annual bill savings — yr 1" form={form} setField={setField} populated={populated} missing={missing} step="50" min="0" pre="£" />
+        <NumField id="export_kwh" label="Annual export to grid" form={form} setField={setField} populated={populated} missing={missing} step="100" min="0" unit="kWh/yr" />
+        <NumField id="os_payback" label="Payback period" form={form} setField={setField} populated={populated} missing={missing} step="0.1" min="0" unit="years" />
       </div>
       <div className="igrid">
-        <NumField id="os_25yr" label="25-year cumulative return" form={form} setField={setField} populated={populated} step="100" pre="£" />
-        <NumField id="os_roi" label="Rate of return on investment" form={form} setField={setField} populated={populated} step="0.1" min="0" unit="%" placeholder="—" />
+        <NumField id="os_25yr" label="25-year cumulative return" form={form} setField={setField} populated={populated} missing={missing} step="100" pre="£" />
+        <NumField id="os_roi" label="Rate of return on investment" form={form} setField={setField} populated={populated} missing={missing} step="0.1" min="0" unit="%" placeholder="—" />
       </div>
 
       <hr />
@@ -217,7 +234,7 @@ export default function InputForm({
       <div className={`rate-panel${tariff === 'standard' ? ' visible' : ''}`}>
         <p className="rate-panel-title">Standard tariff rates</p>
         <div className="igrid">
-          <NumField id="std_import" label="Import unit rate" form={form} setField={setField} populated={populated} step="0.1" min="0" unit="p/kWh" />
+          <NumField id="std_import" label="Import unit rate" form={form} setField={setField} populated={populated} missing={missing} step="0.1" min="0" unit="p/kWh" />
           <div className="field" style={{ background: 'transparent', borderColor: 'transparent' }} />
         </div>
       </div>
@@ -225,8 +242,8 @@ export default function InputForm({
       <div className={`rate-panel${tariff === 'daynight' ? ' visible' : ''}`}>
         <p className="rate-panel-title">Day / Night tariff rates</p>
         <div className="igrid">
-          <NumField id="dn_day" label="Day rate (peak import)" form={form} setField={setField} populated={populated} step="0.1" min="0" unit="p/kWh" />
-          <NumField id="dn_night" label="Night rate (off-peak import)" form={form} setField={setField} populated={populated} step="0.1" min="0" unit="p/kWh" />
+          <NumField id="dn_day" label="Day rate (peak import)" form={form} setField={setField} populated={populated} missing={missing} step="0.1" min="0" unit="p/kWh" />
+          <NumField id="dn_night" label="Night rate (off-peak import)" form={form} setField={setField} populated={populated} missing={missing} step="0.1" min="0" unit="p/kWh" />
         </div>
       </div>
 
@@ -302,7 +319,17 @@ export default function InputForm({
         </div>
       </div>
 
-      <button className="cbtn" onClick={onCalculate} disabled={calculating}>
+      {/* Names what is still needed, so an incomplete quote can't produce a report. */}
+      {gaps.length > 0 && (
+        <div className="calc-gate">
+          Still needed before a report can be produced: {gaps.join(', ')}.
+        </div>
+      )}
+      <button
+        className="cbtn"
+        onClick={onCalculate}
+        disabled={calculating || gaps.length > 0}
+      >
         {calculating ? 'Calculating…' : 'Calculate Sentinel uplift'}
       </button>
     </div>

@@ -44,12 +44,17 @@ export async function POST(req: Request) {
   }
 
   try {
-    const fields = await extractFields(text);
+    const { fields, missing, warnings } = await extractFields(text);
     const populated = countPopulated(fields);
+    const message = missing.length
+      ? `✓ Extracted ${populated} values. ${missing.length} could not be found and are marked below — enter them from the proposal before calculating.`
+      : `✓ Extracted ${populated} values. Review and adjust if needed, then click Calculate.`;
     return NextResponse.json({
       fields,
+      missing,
+      warnings,
       populated_count: populated,
-      message: `✓ Extracted ${populated} values. Review and adjust if needed, then click Calculate.`,
+      message,
     });
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Extraction failed.';

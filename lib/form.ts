@@ -23,24 +23,60 @@ export interface FormState {
   dn_night: string;
 }
 
+// Everything sourced from the customer's proposal starts EMPTY. It used to ship a demo
+// dataset (14.62kWp / £23,867 / £3,733), which meant a failed extraction left a plausible
+// wrong number in the field instead of an obvious gap — and £3,733 reached a
+// customer-facing report as if it had come from the quote. Only the tariff rates keep
+// defaults: they are surveyor assumptions, not figures read off the proposal.
 export const DEFAULT_FORM: FormState = {
   customer_name: '',
   customer_address: '',
-  pv_size: '14.62',
-  battery_kwh: '10',
-  inverter_kw: '5',
-  annual_gen: '13081',
-  annual_usage: '4500',
-  system_cost: '23867',
-  solar_savings: '3733',
-  export_kwh: '8449',
-  os_payback: '5.83',
-  os_25yr: '241633',
+  pv_size: '',
+  battery_kwh: '',
+  inverter_kw: '',
+  annual_gen: '',
+  annual_usage: '',
+  system_cost: '',
+  solar_savings: '',
+  export_kwh: '',
+  os_payback: '',
+  os_25yr: '',
   os_roi: '',
   std_import: '28',
   dn_day: '28',
   dn_night: '15',
 };
+
+// What must be supplied before a report can be produced. `zeroOk` fields are legitimately
+// zero on some systems — no battery, no export — so they must be FILLED IN but are allowed
+// to be 0; the rest must be positive.
+export const REQUIRED_FIELDS: { id: keyof FormState; label: string; zeroOk?: boolean }[] = [
+  { id: 'pv_size', label: 'Solar PV size' },
+  { id: 'battery_kwh', label: 'Battery capacity', zeroOk: true },
+  { id: 'inverter_kw', label: 'Inverter power rating', zeroOk: true },
+  { id: 'annual_gen', label: 'Annual generation' },
+  { id: 'annual_usage', label: 'Annual consumption' },
+  { id: 'system_cost', label: 'Total system cost' },
+  { id: 'solar_savings', label: 'Annual bill savings — yr 1' },
+  { id: 'export_kwh', label: 'Annual export to grid', zeroOk: true },
+  { id: 'os_payback', label: 'Payback period' },
+  { id: 'os_25yr', label: '25-year cumulative return' },
+];
+
+// Labels of the required fields still blank or non-positive; empty when ready to calculate.
+export function gateFailures(f: FormState): string[] {
+  const out: string[] = [];
+  for (const field of REQUIRED_FIELDS) {
+    const raw = (f[field.id] || '').trim();
+    if (raw === '') {
+      out.push(field.label);
+      continue;
+    }
+    const v = Number.parseFloat(raw);
+    if (!Number.isFinite(v) || v < 0 || (!field.zeroOk && v <= 0)) out.push(field.label);
+  }
+  return out;
+}
 
 export const NUMERIC_FIELD_KEYS = [
   'pv_size',
@@ -90,30 +126,58 @@ export function buildCalcInput(
   };
 }
 
-// Populate fields the PDF provided (numeric > 0, text non-empty), preserving
-// existing values for anything the PDF didn't contain. Mirrors the highlight
-// logic in sentinelHandlePDF().
+// Populate fields the PDF provided (numeric > 0, text non-empty), preserving existing
+// values for anything the PDF didn't contain. Mirrors the highlight logic in
+// sentinelHandlePDF().
+//
+// `edited` holds keys the surveyor has typed into since the last extraction. Those win over
+// a fresh extraction: re-dropping the same quote used to silently overwrite a hand-corrected
+// figure, which is how a corrected system cost reverted to the mis-extracted one. Returns
+// the keys it declined to overwrite so the UI can say so.
 export function applyExtracted(
   prev: FormState,
-  fields: ExtractedFields
-): { form: FormState; populated: Set<string> } {
+  fields: ExtractedFields,
+  missing: string[] = [],
+  edited: Set<string> = new Set()
+): {
+  form: FormState;
+  populated: Set<string>;
+  missing: Set<string>;
+  preserved: string[];
+} {
   const next: FormState = { ...prev };
   const populated = new Set<string>();
+  const preserved: string[] = [];
+
+  const keep = (k: keyof FormState, incoming: string) =>
+    edited.has(k) && (prev[k] || '').trim() !== '' && incoming !== (prev[k] || '').trim();
 
   for (const k of NUMERIC_FIELD_KEYS) {
     const v = fields[k];
-    if (typeof v === 'number' && v > 0) {
-      next[k] = String(v);
-      populated.add(k);
+    if (typeof v !== 'number' || !(v > 0)) continue;
+    if (keep(k, String(v))) {
+      preserved.push(k);
+      continue;
     }
+    next[k] = String(v);
+    populated.add(k);
   }
   for (const k of TEXT_FIELD_KEYS) {
     const v = fields[k];
-    if (v) {
-      next[k] = v;
-      populated.add(k);
+    if (!v) continue;
+    if (keep(k, v)) {
+      preserved.push(k);
+      continue;
     }
+    next[k] = v;
+    populated.add(k);
   }
 
-  return { form: next, populated };
+  // A field the extractor missed is only a visible gap while it is actually empty — if the
+  // surveyor has already supplied it by hand there is nothing to flag.
+  const missingSet = new Set(
+    missing.filter((k) => ((next[k as keyof FormState] as string) || '').trim() === '')
+  );
+
+  return { form: next, populated, missing: missingSet, preserved };
 }

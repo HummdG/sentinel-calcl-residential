@@ -339,6 +339,10 @@ export function calculate(p: CalcInput, c: Constants): CalcResult {
     sentinel_25yr: phpRound(sent25),
 
     roi_annualised_pct: phpRound(sentRoiIrr, 2),
+    // Echoed so the report renders every cell from one calculation snapshot rather than
+    // reading this one out of the live form, where it could belong to a newer edit than
+    // the figures beside it.
+    solar_roi: p.os_roi,
 
     chart_cumulative: chartCumulative,
     chart_monthly: chartMonthly,

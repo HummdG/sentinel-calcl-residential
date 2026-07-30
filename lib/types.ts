@@ -50,6 +50,9 @@ export interface CalcResult {
   sentinel_25yr: number;
 
   roi_annualised_pct: number;
+  // The customer's own OpenSolar RoI, echoed back so the report renders every cell from
+  // one calculation snapshot instead of reading this one out of the live form.
+  solar_roi: number;
 
   chart_cumulative: ChartSeries;
   chart_monthly: ChartSeries;
@@ -84,4 +87,16 @@ export interface ExtractedFields {
   os_payback: number;
   os_25yr: number;
   os_roi: number;
+}
+
+// What /api/parse-pdf returns. `missing` names the keys the model could not find — a null
+// becomes 0 by the time it reaches the client, which is indistinguishable from a genuine
+// zero, so without this list a value left over in the field passes for an extracted one.
+// `warnings` are cross-field plausibility failures for the surveyor to eyeball.
+export interface ParsedPdfResponse {
+  fields: ExtractedFields;
+  missing: string[];
+  warnings: string[];
+  populated_count: number;
+  message: string;
 }
