@@ -10,15 +10,18 @@ interface Props {
   result: CalcResult;
   customerName: string;
   customerAddress: string;
-  osRoi: number;
   captureRef: RefObject<HTMLDivElement | null>;
 }
 
 const gb = (n: number) => Math.round(n).toLocaleString('en-GB');
 
-export default function ResultsReport({ result: d, customerName, customerAddress, osRoi, captureRef }: Props) {
+export default function ResultsReport({ result: d, customerName, customerAddress, captureRef }: Props) {
   const name = customerName.trim();
   const addr = customerAddress.trim();
+
+  // Every figure comes from the calculation result, never from live form state — otherwise
+  // a cell can belong to a newer edit than the numbers beside it.
+  const osRoi = d.solar_roi;
 
   const dateStr = new Date().toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -26,7 +29,11 @@ export default function ResultsReport({ result: d, customerName, customerAddress
     year: 'numeric',
   });
 
-  const pbSave = d.payback_solar - d.payback_sentinel;
+  // Measured against the payback the customer's own proposal states (d.solar_payback, the
+  // same figure shown as "Payback without Sentinel"), not the internally recomputed
+  // payback_solar — otherwise the three payback numbers on the page don't reconcile. This
+  // matches the WordPress plugin.
+  const pbSave = d.solar_payback - d.payback_sentinel;
 
   return (
     <div id="pdf-capture" ref={captureRef}>

@@ -37,6 +37,7 @@
             "sentinel_payback": 4.17,
             "sentinel_25yr": 297520,
             "roi_annualised_pct": 28.18,
+            "solar_roi": 0,
             "chart_cumulative": {
                 "labels": [
                     "Now",
@@ -218,6 +219,7 @@
             "sentinel_payback": 3.95,
             "sentinel_25yr": 307806,
             "roi_annualised_pct": 29.62,
+            "solar_roi": 0,
             "chart_cumulative": {
                 "labels": [
                     "Now",
@@ -399,6 +401,7 @@
             "sentinel_payback": 3.7,
             "sentinel_25yr": 344142,
             "roi_annualised_pct": 31.38,
+            "solar_roi": 0,
             "chart_cumulative": {
                 "labels": [
                     "Now",
@@ -580,6 +583,7 @@
             "sentinel_payback": 4.17,
             "sentinel_25yr": 297520,
             "roi_annualised_pct": 28.18,
+            "solar_roi": 11.9,
             "chart_cumulative": {
                 "labels": [
                     "Now",
@@ -761,6 +765,7 @@
             "sentinel_payback": 3.12,
             "sentinel_25yr": 399559,
             "roi_annualised_pct": 36.66,
+            "solar_roi": 0,
             "chart_cumulative": {
                 "labels": [
                     "Now",
@@ -942,6 +947,7 @@
             "sentinel_payback": 4.17,
             "sentinel_25yr": 304523,
             "roi_annualised_pct": 30.08,
+            "solar_roi": 0,
             "chart_cumulative": {
                 "labels": [
                     "Now",
@@ -1123,6 +1129,7 @@
             "sentinel_payback": 3.67,
             "sentinel_25yr": 389925,
             "roi_annualised_pct": 34.87,
+            "solar_roi": 8.5,
             "chart_cumulative": {
                 "labels": [
                     "Now",

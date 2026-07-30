@@ -2,15 +2,16 @@
 
 import { useRef, useState } from 'react';
 import { extractPdfText } from '@/lib/pdf-extract';
-import type { ExtractedFields } from '@/lib/types';
+import type { ParsedPdfResponse } from '@/lib/types';
 
 const MAX_MB = Number(process.env.NEXT_PUBLIC_MAX_UPLOAD_MB) || 20;
 
 interface Props {
-  onExtracted: (fields: ExtractedFields) => void;
+  onExtracted: (data: ParsedPdfResponse) => void;
+  warnings: string[];
 }
 
-export default function UploadZone({ onExtracted }: Props) {
+export default function UploadZone({ onExtracted, warnings }: Props) {
   const [status, setStatus] = useState<{ cls: string; msg: string }>({ cls: '', msg: '' });
   const [drag, setDrag] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -41,12 +42,13 @@ export default function UploadZone({ onExtracted }: Props) {
         throw new Error(data.error || 'Extraction failed.');
       }
 
-      onExtracted(data.fields as ExtractedFields);
+      const parsed = data as ParsedPdfResponse;
+      onExtracted(parsed);
       setStatus({
         cls: 'success',
         msg:
-          data.message ||
-          `✓ Extracted ${data.populated_count} values. Review and adjust if needed, then click Calculate.`,
+          parsed.message ||
+          `✓ Extracted ${parsed.populated_count} values. Review and adjust if needed, then click Calculate.`,
       });
     } catch (e) {
       setStatus({
@@ -90,6 +92,14 @@ export default function UploadZone({ onExtracted }: Props) {
         <p className="upload-sub">Key figures will be extracted automatically</p>
       </div>
       <div className={`upload-status ${status.cls}`.trim()}>{status.msg}</div>
+      {/* Advisory only — these never block Calculate; the completeness gate does that. */}
+      {warnings.length > 0 && (
+        <ul className="upload-warnings">
+          {warnings.map((w, i) => (
+            <li key={i}>{w}</li>
+          ))}
+        </ul>
+      )}
     </>
   );
 }
