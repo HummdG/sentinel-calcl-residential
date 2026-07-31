@@ -2,8 +2,13 @@
 //
 // The PDF never leaves the browser: we extract text here and POST only the small
 // text payload to /api/parse-pdf. This sidesteps Vercel's ~4.5 MB request-body
-// limit and keeps the Groq call server-side. Pages are tagged "=== PAGE n ==="
-// to match the WordPress smalot extractor so the server-side head/tail fit works.
+// limit and keeps the model call server-side. Pages are tagged "=== PAGE n ===" so
+// the extractor can cite a page number and the verifier can look that page back up.
+//
+// Text hygiene and tagging live in lib/pdf-text.ts, shared with scripts/make-fixtures.ts
+// so scoring fixtures are byte-identical to what this function produces.
+
+import { tagPages } from './pdf-text';
 
 export async function extractPdfText(file: File): Promise<string> {
   const { getDocumentProxy, extractText } = await import('unpdf');
@@ -11,14 +16,5 @@ export async function extractPdfText(file: File): Promise<string> {
   const pdf = await getDocumentProxy(buffer);
   const { text } = await extractText(pdf, { mergePages: false });
 
-  const pages = Array.isArray(text) ? text : [text];
-  const parts: string[] = [];
-  pages.forEach((raw, i) => {
-    const trimmed = (raw ?? '').trim();
-    if (trimmed !== '') {
-      parts.push(`=== PAGE ${i + 1} ===\n${trimmed}`);
-    }
-  });
-
-  return parts.join('\n\n');
+  return tagPages(Array.isArray(text) ? text : [text]);
 }

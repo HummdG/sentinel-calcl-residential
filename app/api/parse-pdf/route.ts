@@ -1,63 +1,16 @@
-import { NextResponse } from 'next/server';
-import { extractFields } from '@/lib/groq';
-import type { ExtractedFields } from '@/lib/types';
+// Tier 1: cheap model, document text only.
+//
+// Returns as soon as the fast model has been verified, so the surveyor sees most fields
+// in a few seconds. If a verification gate failed, `escalate` is set and the client calls
+// /api/parse-pdf/escalate. Splitting the tiers across two requests keeps each one inside
+// Vercel's 60s function ceiling, which a Haiku call followed by an Opus vision call would
+// otherwise breach.
+
+import { handleExtraction } from '@/lib/extract/route-handler';
 
 export const runtime = 'nodejs';
-// Groq extraction can take a few seconds; allow up to 60s (Vercel Hobby cap).
 export const maxDuration = 60;
 
-// Count how many fields the model actually populated, to report back to the UI.
-function countPopulated(fields: ExtractedFields): number {
-  const numericKeys: (keyof ExtractedFields)[] = [
-    'pv_size',
-    'battery_kwh',
-    'inverter_kw',
-    'annual_gen',
-    'annual_usage',
-    'system_cost',
-    'solar_savings',
-    'export_kwh',
-    'os_payback',
-    'os_25yr',
-    'os_roi',
-  ];
-  const textKeys: (keyof ExtractedFields)[] = ['customer_name', 'customer_address'];
-  let count = 0;
-  for (const k of numericKeys) if ((fields[k] as number) > 0) count++;
-  for (const k of textKeys) if ((fields[k] as string) !== '') count++;
-  return count;
-}
-
 export async function POST(req: Request) {
-  let text: unknown;
-  try {
-    ({ text } = await req.json());
-  } catch {
-    return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
-  }
-
-  if (typeof text !== 'string' || text.trim() === '') {
-    return NextResponse.json(
-      { error: 'Could not read any text from the PDF. Please enter values manually.' },
-      { status: 400 }
-    );
-  }
-
-  try {
-    const { fields, missing, warnings } = await extractFields(text);
-    const populated = countPopulated(fields);
-    const message = missing.length
-      ? `✓ Extracted ${populated} values. ${missing.length} could not be found and are marked below — enter them from the proposal before calculating.`
-      : `✓ Extracted ${populated} values. Review and adjust if needed, then click Calculate.`;
-    return NextResponse.json({
-      fields,
-      missing,
-      warnings,
-      populated_count: populated,
-      message,
-    });
-  } catch (e) {
-    const message = e instanceof Error ? e.message : 'Extraction failed.';
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+  return handleExtraction(req, 'primary');
 }

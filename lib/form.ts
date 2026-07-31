@@ -25,7 +25,7 @@ export interface FormState {
 
 // Everything sourced from the customer's proposal starts EMPTY. It used to ship a demo
 // dataset (14.62kWp / £23,867 / £3,733), which meant a failed extraction left a plausible
-// wrong number in the field instead of an obvious gap — and £3,733 reached a
+// wrong number in the field instead of an obvious gap. And £3,733 reached a
 // customer-facing report as if it had come from the quote. Only the tariff rates keep
 // defaults: they are surveyor assumptions, not figures read off the proposal.
 export const DEFAULT_FORM: FormState = {
@@ -48,7 +48,7 @@ export const DEFAULT_FORM: FormState = {
 };
 
 // What must be supplied before a report can be produced. `zeroOk` fields are legitimately
-// zero on some systems — no battery, no export — so they must be FILLED IN but are allowed
+// zero on some systems. No battery, no export. So they must be FILLED IN but are allowed
 // to be 0; the rest must be positive.
 export const REQUIRED_FIELDS: { id: keyof FormState; label: string; zeroOk?: boolean }[] = [
   { id: 'pv_size', label: 'Solar PV size' },
@@ -57,7 +57,7 @@ export const REQUIRED_FIELDS: { id: keyof FormState; label: string; zeroOk?: boo
   { id: 'annual_gen', label: 'Annual generation' },
   { id: 'annual_usage', label: 'Annual consumption' },
   { id: 'system_cost', label: 'Total system cost' },
-  { id: 'solar_savings', label: 'Annual bill savings — yr 1' },
+  { id: 'solar_savings', label: 'Annual bill savings (yr 1)' },
   { id: 'export_kwh', label: 'Annual export to grid', zeroOk: true },
   { id: 'os_payback', label: 'Payback period' },
   { id: 'os_25yr', label: '25-year cumulative return' },
@@ -154,7 +154,12 @@ export function applyExtracted(
 
   for (const k of NUMERIC_FIELD_KEYS) {
     const v = fields[k];
-    if (typeof v !== 'number' || !(v > 0)) continue;
+    // `v > 0` used to be the guard here, which silently discarded a legitimate zero: a
+    // system with no battery, no export, or no separate inverter would come back as 0,
+    // be skipped, and leave the surveyor to hand-type a figure the proposal had already
+    // stated. The extractor now distinguishes null (not in the document) from 0 (stated
+    // as zero), so the only thing to reject is a non-number.
+    if (typeof v !== 'number' || !Number.isFinite(v) || v < 0) continue;
     if (keep(k, String(v))) {
       preserved.push(k);
       continue;
@@ -173,7 +178,7 @@ export function applyExtracted(
     populated.add(k);
   }
 
-  // A field the extractor missed is only a visible gap while it is actually empty — if the
+  // A field the extractor missed is only a visible gap while it is actually empty. If the
   // surveyor has already supplied it by hand there is nothing to flag.
   const missingSet = new Set(
     missing.filter((k) => ((next[k as keyof FormState] as string) || '').trim() === '')

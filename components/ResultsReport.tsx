@@ -19,7 +19,7 @@ export default function ResultsReport({ result: d, customerName, customerAddress
   const name = customerName.trim();
   const addr = customerAddress.trim();
 
-  // Every figure comes from the calculation result, never from live form state — otherwise
+  // Every figure comes from the calculation result, never from live form state. Otherwise
   // a cell can belong to a newer edit than the numbers beside it.
   const osRoi = d.solar_roi;
 
@@ -31,7 +31,7 @@ export default function ResultsReport({ result: d, customerName, customerAddress
 
   // Measured against the payback the customer's own proposal states (d.solar_payback, the
   // same figure shown as "Payback without Sentinel"), not the internally recomputed
-  // payback_solar — otherwise the three payback numbers on the page don't reconcile. This
+  // payback_solar. Otherwise the three payback numbers on the page don't reconcile. This
   // matches the WordPress plugin.
   const pbSave = d.solar_payback - d.payback_sentinel;
 
@@ -114,7 +114,7 @@ export default function ResultsReport({ result: d, customerName, customerAddress
           </span>
         </div>
         <div>
-          <span className="uval">{pbSave > 0 ? sfmtYrs(pbSave) : '—'}</span>
+          <span className="uval">{pbSave > 0 ? sfmtYrs(pbSave) : 'n/a'}</span>
           <span className="ulbl">
             Years saved on
             <br />
@@ -123,7 +123,7 @@ export default function ResultsReport({ result: d, customerName, customerAddress
         </div>
         <div>
           <span className="uval">
-            {d.roi_annualised_pct > 0 ? d.roi_annualised_pct.toFixed(1) + '%' : '—'}
+            {d.roi_annualised_pct > 0 ? d.roi_annualised_pct.toFixed(1) + '%' : 'n/a'}
           </span>
           <span className="ulbl">
             Rate of return
@@ -184,7 +184,7 @@ export default function ResultsReport({ result: d, customerName, customerAddress
             </div>
             <div className="mrow">
               <span className="mlbl">Rate of return on investment</span>
-              <span className="mval">{osRoi > 0 ? osRoi.toFixed(1) + '%' : '—'}</span>
+              <span className="mval">{osRoi > 0 ? osRoi.toFixed(1) + '%' : 'n/a'}</span>
             </div>
           </div>
         </div>
@@ -225,7 +225,7 @@ export default function ResultsReport({ result: d, customerName, customerAddress
             <div className="mrow">
               <span className="mlbl">Rate of return on investment</span>
               <span className="mval g">
-                {d.roi_annualised_pct > 0 ? d.roi_annualised_pct.toFixed(1) + '%' : '—'}
+                {d.roi_annualised_pct > 0 ? d.roi_annualised_pct.toFixed(1) + '%' : 'n/a'}
               </span>
             </div>
           </div>

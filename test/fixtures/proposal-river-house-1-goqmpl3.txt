@@ -1,0 +1,651 @@
+=== PAGE 1 ===
+Prepared by: Ross Miller
+07834828773
+ross@smartlyenergy.com
+For: Stuart
+River House, Castle Business Park,
+Stirling
+Quote #: 9672709
+Valid until: 22nd May 2026
+Your Proposal From Smartly Energy
+Dear Stuart,
+Thank you for the opportunity to present your Smartly Energy Proposal. Please let us know if you have any
+questions, we're happy to help!
+We hope you have peace of mind knowing we have the following accreditations: NICEIC approved contractor
+membership, MCS accreditation, HIES membership, and insurance backed consumer protection.
+Best Regards,
+Ross Miller
+Smartly Energy
+Smartly Energy
+www.smartlyenergy.com
+Phone: 0333 33 55 965
+Email: support@smartlyenergy.com
+Web: www.smartlyenergy.com
+Scan QR code
+on your phone
+to access the
+online
+proposal.
+Proposal for Stuart Sheils
+
+=== PAGE 2 ===
+Smartly Energy is one of the UK's leading installers of Solar Systems. We supply and install all over the UK, and guide you through every
+step of the process.
+Our experienced team are passionate about Renewable Energy.
+Our mission is to help customers learn all about Solar Power and ensure they get the most suitable system for their needs
+We are an award-winning, sustainable UK family business, proudly certied as Carbon Neutral
+Thank you for the opportunity to present your Smartly Energy Proposal. Please let us know if you have any questions, we're happy to
+help!
+We hope you have peace of mind knowing we have the following accreditations: NICEIC approved contractor membership, MCS
+accreditation, HIES membership, and insurance backed consumer protection.
+Proposal for Stuart Sheils
+Smartly Energy - Ross Miller - ross@smartlyenergy.com - 07834828773 Page 2 / 10
+
+=== PAGE 3 ===
+Recommended System Option
+33.75 kW
+System Size
+£83,946
+Total System Price
+excluding VAT
+£6,063
+Estimated Annual
+Electricity Bill Savings
+28,087 kWh
+Estimated Annual
+Solar Generation
+Proposal for Stuart Sheils
+Smartly Energy - Ross Miller - ross@smartlyenergy.com - 07834828773 Page 3 / 10
+
+=== PAGE 4 ===
+Your Solution
+Warranties: 25 Year Panel Product Warranty, 30 Year Panel Performance Warranty
+JA Solar 450W N-type Bifacial
+Double Glass Traceable LB All
+Black with MC4
+33.750kW of Solar Power
+75 x JAM54D-41-450-LB-TS-AB-MC4
+450 Watt panels
+25 Year Product Warranty & 30 Year Linear
+Performance Warranty
+28,087kWh per year
+FoxESS H3 Plus
+50kW of Inverter Power
+Fox ESS 1 x H350Plus
+10 Years Warranty
+FoxESS CQ16
+176.77kWh of Battery Storage
+Fox ESS
+11 x CQ16
+10 Year Warranty
+Proposal for Stuart Sheils
+Smartly Energy - Ross Miller - ross@smartlyenergy.com - 07834828773 Page 4 / 10
+
+=== PAGE 5 ===
+System Performance
+7%
+Energy From Solar
+100%
+Self Consumption
+0%
+Export to grid
+System Performance Assumptions: System Total losses: 14.8%, Inverter losses: 1.9%, Optimizer losses: 0%, Shading losses: 4.2%, Performance Adjustment: 0%, Output
+Calculator: System Advisor Model SAM 2025.4.16 Revision 1. Panel Orientations: 38 panels with Azimuth 170 and Slope 20, 12 panels with Azimuth 125 and Slope 10, 12
+panels with Azimuth 305 and Slope 10, 5 panels with Azimuth 214 and Slope 20, 8 panels with Azimuth 205 and Slope 20.
+The MCS output (MIS 3002) and self-consumption (MGD 003) calculation methodology was not used in calculating the numbers in the table below. An alternative
+calculator System Advisor Model SAM 2025.4.16 Revision 1 was used.
+[EESS capacity not used for self consumption] Storage capacity of the battery - assumed usable capacity of battery [Total energy discharged per annum] Assumed usable
+capacity of battery x 730 [Additional self consumption] Estimated annual output (Section B) x self consumption rate with battery as a % (no higher than 95%) - Expected
+solar PV self-consumption (with EESS) (Section D)
+A. Installation data
+Installed capacity of PV system - kWp (stc) 33.750 kWp
+Orientation of the PV system - degrees from South
+Group 1: 38 panels with Orientation: 10 ° Group
+2: 12 panels with Orientation: 55 ° Group 3: 12
+panels with Orientation: 125 ° Group 4: 5 panels
+with Orientation: 35 ° Group 5: 8 panels with
+Orientation: 25 °
+°
+Inclination of system - degrees from horizontal
+Group 1: 38 panels with Tilt: 20° Group 2: 12
+panels with Tilt: 10° Group 3: 12 panels with Tilt:
+10° Group 4: 5 panels with Tilt: 20° Group 5: 8
+panels with Tilt: 20°
+°
+Postcode region 14
+B. Performance calculations
+New System Generation
+(kWh/day)
+Consumption
+(kWh/day)
+0
+500
+1000
+1500
+19.8 41.2 76.7 104 132 137 139 111 78.9 44.6 24.8 12.5
+Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+0
+500
+1000
+1500
+Proposal for Stuart Sheils
+Smartly Energy - Ross Miller - ross@smartlyenergy.com - 07834828773 Page 5 / 10
+
+=== PAGE 6 ===
+kWh/kWp (Kk) 868.5 kWh/kWp
+Shade Factor (SF) 0.958
+Estimated annual output (kWp x Kk x SF) 28,087 kWh
+C. Estimated PV self-consumption - PV Only
+Assumed occupancy archetype Home All Day
+Assumed annual electricity consumption, kWh 384,000 kWh
+Assumed annual electricity generation from solar PV
+system, kWh 28,087 kWh
+Expected solar PV self-consumption (PV Only) 28,087 kWh
+Grid electricity independence / Self-suciency (PV
+Only) 7.3 %
+D. Estimated PV self-consumption - with EESS
+Assumed usable capacity of electricity energy storage
+device, which is used for self-consumption, kWh 159.09 kWh
+Expected solar PV self-consumption (with EESS) 28,086 kWh
+Grid electricity independence / Self-suciency (with
+EESS) 7.0 %
+E. Additional benets from PV and EESS
+EESS capacity not used for self-consumption 17.68 kWh
+Total energy discharged per annum 116,138 kWh
+Additional self-consumption for EV, heat pumps,
+diverters (only when present) 0.00 kWh
+Proposal for Stuart Sheils
+Smartly Energy - Ross Miller - ross@smartlyenergy.com - 07834828773 Page 6 / 10
+
+=== PAGE 7 ===
+Net Financial Impact Cash
+£236,931
+Utility Bill Savings
+- £83,946
+Net System Cost
+= £152,985
+Estimated Net Savings
+Cumulative Savings From Going Solar
+Payback 11 years
+Net Savings £152,985
+2026 2030 2035 2040 2045
+£-200,000
+£-150,000
+£-100,000
+£-50,000
+£0
+£50,000
+£100,000
+£150,000
+£200,000
+Annual Savings From Going Solar
+Initial Investment
+2026 2030 2035 2040 2045
+£-100,000
+£-75,000
+£-50,000
+£-25,000
+£0
+£25,000
+£50,000
+£75,000
+£100,000
+Estimates do not include replacement costs of equipment not covered by a warranty. Components may need replacement after their warranty period. Financial discount
+rate assumed: 6.75%
+Proposal for Stuart Sheils
+Smartly Energy - Ross Miller - ross@smartlyenergy.com - 07834828773 Page 7 / 10
+
+=== PAGE 8 ===
+Electricity Bill Savings
+First Year Monthly Bill Savings
+Old Bill New Bill
+£0
+£2,000
+£4,000
+£6,000
+£8,000
+Cumulative Bill Savings
+Lifetime Bill Savings £236,931
+1 5 10 15 20
+£0
+£50,000
+£100,000
+£150,000
+£200,000
+£250,000
+Usage Savings
+Month
+Solar
+Generation
+(kWh)
+Net Grid
+Consumption
+before new
+system (kWh)
+Electricity
+Imported
+after new
+system (kWh)
+Electricity
+Exported
+after new
+system (kWh)
+Export
+Credit
+(£)
+Utility Bill
+before new
+system (£)
+Utility Bill
+after new
+system (£)
+Estimated
+Savings
+(£)
+Jan 614 32,000 31,386 0 0 6,770 6,638 133
+Feb 1,154 32,000 30,846 0 0 6,769 6,519 249
+Mar 2,377 32,000 29,623 0 0 6,770 6,257 513
+Apr 3,111 32,000 28,889 0 0 6,770 6,098 672
+May 4,092 32,000 27,908 0 0 6,770 5,887 883
+Jun 4,108 32,000 27,892 0 0 6,770 5,884 886
+Jul 4,317 32,000 27,683 0 0 6,770 5,839 932
+Aug 3,432 32,000 28,568 0 0 6,770 6,029 741
+Sep 2,367 32,000 29,633 0 0 6,770 6,259 511
+Oct 1,382 32,000 30,618 0 0 6,770 6,472 298
+Nov 744 32,000 31,256 0 0 6,770 6,609 161
+Dec 388 32,000 31,612 0 0 6,770 6,687 84
+Your projected energy cost is calculated by considering a 7% increase in energy cost each year, due to trends in the raising cost of energy. This estimate is based on your
+selected preferences, current energy costs and the position and orientation of your roof to calculate the eciency of the system. Projections are based on estimated usage
+of 384000 kWh per year, assuming Scottish Gas - Apr 26 Electricity Tariff.
+Your electricity tariff rates may change as a result of installing the system. You should contact your electricity retailer for further information.
+Proposed Tariff Details - Octopus Energy Octopus Flux N Scotland - Apr 26
+Energy Charges
+Standard Import5am-12am\sMon-Sun £0.22 / kWh
+Flux Import12am-5am\sMon-Sun £0.16 / kWh
+Monthly Electricity Spend
+Proposal for Stuart Sheils
+Smartly Energy - Ross Miller - ross@smartlyenergy.com - 07834828773 Page 8 / 10
+
+=== PAGE 9 ===
+Smart Export Guarantee
+rate 0All Day\sMon-Sun £0.15 / kWh
+rate 1All Day\sMon-Sun £0.00 / kWh
+Fixed Charges
+Standing Charge £0.62 / day
+How your system works
+Generating Excess Solar
+HOME
+BATTERY
+SOLAR GRID
+Partially Offset Usage
+HOME
+BATTERY
+SOLAR GRID
+Night
+HOME
+BATTERY
+SOLAR GRID
+Proposal for Stuart Sheils
+Smartly Energy - Ross Miller - ross@smartlyenergy.com - 07834828773 Page 9 / 10
+
+=== PAGE 10 ===
+Daily Energy Flows
+CONSUMPTION (kWh) GENERATION (kWh) BATTERY (kWh) NET CONSUMPTION (kWh) EXPORT TO GRID (kWh)
+Winter Weekday
+4am 8am 12pm 4pm 8pm
+-80
+-60
+-40
+-20
+0
+Winter Weekend
+4am 8am 12pm 4pm 8pm
+-80
+-60
+-40
+-20
+0
+Summer Weekday
+4am 8am 12pm 4pm 8pm
+-80
+-60
+-40
+-20
+0
+Summer Weekend
+4am 8am 12pm 4pm 8pm
+-80
+-60
+-40
+-20
+0
+Environmental Benets
+Solar has no emissions. It just silently generates pure, clean energy.
+This proposal has been prepared by Smartly Energy using tools from OpenSolar. Please visit www.opensolar.com/proposal-disclaimer for additional
+disclosures from OpenSolar.
+↑ Generation (kW)
+↓ Consumption (kW)
+↑ Generation (kW)
+↓ Consumption (kW)
+↑ Generation (kW)
+↓ Consumption (kW)
+↑ Generation (kW)
+↓ Consumption (kW)
+Each Year
+7%
+Consumption Offset
+7tons
+of CO₂ reduced per year
+Over System Lifetime
+212,612km
+Car distance avoided
+(lifetime)
+1,367
+Trees planted
+152
+Long haul ights
+avoided
+Proposal for Stuart Sheils
+Smartly Energy - Ross Miller - ross@smartlyenergy.com - 07834828773 Page 10 / 10
+
+=== PAGE 13 ===
+www.fox-ess.com
+For more information about the Fox ESS range, visit:
+H3 Plus
+D A T A S H E E T
+THREE-PHASE HYBRID INVERTER
+with FoxCloud V2.0
+Advanced System Monitoring
+Fox ESS H3 Plus is a state-of-the-art hybrid inverter models
+designed for maximum efficiency and reliability. With
+outstanding specifications and advanced features it is a
+market changer in commercial applications.
+50kW 125kW
+HIGH PERFORMANCE
+Supports 100% unbalanced three-phase
+output.
+LONG BACK UP CAPABILITY
+More than 6 hours backup power
+available.
+EPS FUNCTION
+Less than 10ms switch time.
+DISPLAY
+Color LCD screen.
+
+=== PAGE 14 ===
+Version2.6 | 2025/08/26
+TECHNICAL SPECIFICATIONS
+AC OUTPUT
+BATTERY SPECIFICATION
+Baery Type
+Voltage Range [V]
+Max. Charging/Discharging Current [A]
+Baery Port
+Communicaon
+LFP (LiFePO₄)
+180 ~ 950
+240 (80+80+80)
+3
+CAN*3
+MODEL
+Nominal AC Power [kW]
+Max. AC Output Power [kVA]
+Rated AC Output Current (Per Phase) [A]
+Max. AC Output Current (Per Phase) [A]
+Nominal AC Voltage [V]
+AC Voltage Range [Un]
+Nominal AC Frequency [Hz]
+Frequency Range [Hz]
+Power Factor
+THDi [%]
+380/400, 3W+N+PE or 3W+PE
+0.8 ~ 1.2
+50/60
+50/60, ±5
+0.8 Leading ~ 0.8 Lagging
+<3 @Rated Power
+AC INTPUT
+Max. AC Input Power [kVA]
+Max. Bypass Current [A]
+Nominal AC Voltage [V]
+Frequency Range [Hz]
+207
+300
+380/400, 3W+N+PE or 3W+PE
+50/60, ±5
+EPS OUTPUT (LOAD)
+Max. AC Output Power [kVA]
+Peak AC Output Power [kVA] (10s)
+LRA Current [A]
+Nominal AC Voltage [V]
+Nominal AC Frequency [Hz]
+Switching Time [ms]
+THDv [%]
+155
+300
+380/400, 3W+N+PE or 3W+PE
+50/60
+<10
+<3 @Rated Power
+EFFICIENCY
+European Efficiency [%]
+Max. Efficiency [%]
+98.1
+98.5
+PROTECTION
+DC Input Switch
+Baery Reverse Polarity
+PV Reverse Polarity
+AC Overcurrent Protecon
+AC Output Short Circuit Protecon
+AC/DC Surge Protecon
+ISO Detecon
+Residual Current Detecon
+Ground Fault Detecon
+AFCI
+Terminal Overtemperature Protecon
+String Current Detecon
+Yes
+Yes
+Yes
+Yes
+Yes
+Class II
+Yes
+Yes
+Yes
+Yes
+Yes
+Yes
+GENERAL SEPECIFICATION
+Dimensions (W*H*D) [mm]
+Weight [kg]
+Operang Temperature [°C]
+Cooling Method
+Operang Altude [m]
+Humidity [%]
+Noise [dB]
+Standby Consumpon [W]
+DC-Link EV Charger Ready [kW]
+Ingress Protecon (IP) Rang
+Topology
+Display
+Communicaon Ports
+730*1060*305
+–30 ~ 60
+Smart Air Cooling
+4000
+0 ~ 100
+<70
+<60
+20 ~ 50
+IP65
+Non-Isolaon
+LED, LCD, Wi-Fi+APP
+USB / RS485 / Bluetooth / Wi-Fi+LAN / 4G(Oponal) / CAN
+H3-50-Plus
+50
+55
+76
+83.6
+55
+115
+H3-75-Plus
+75
+75*/82.5
+114
+114*/125.4
+75*/82.5
+120
+H3-100-Plus
+100
+110
+151.9
+167.2
+110
+120
+H3-80-Plus
+80
+88
+121.6
+133.7
+88
+120
+H3-60-Plus
+60
+66
+91.2
+100.3
+66
+115
+H3-125-Plus
+PV INTPUT
+Max. Array Power [kW]
+Max. Input Power [kW]
+Withstand Voltage [V]
+Input Voltage Range [V]
+Max. MPPT Input Current [A]
+Max. MPPT Short Circuit Current [A]
+MPPT Voltage Range [V]
+Start-up Voltage [V]
+No. of MPP Trackers
+Strings per MPP Tracker
+1000
+180 ~ 950
+40
+50
+180 ~ 850
+180
+2
+100
+100
+4
+150
+150
+8
+200
+200
+8
+160
+160
+8
+120
+120
+4
+250
+250
+8
+125
+137.5
+189.9
+198.5
+137.5
+120
+* Only for Brazil
+
+=== PAGE 15 ===
+The CQ16 is a high-performance, scalable battery storage system, allowing for maximum flexibility and making it
+suitable for a broad range of energy storage applications.
+- Scalable from 64.28kWh to 241.05 kWh
+- One CQ BOX is required for each battery system
+CQ16
+D A T A S H E E T
+HIGH VOLTAGE STORAGE BATTERY
+www.fox-ess.com
+For more information about the Fox ESS range, visit:
+HIGH
+EFFICIENCY
+EXPANDABLE
+SYSTEM
+EASY
+INSTALLATION
+SAFETY
+RELIABLE
+90%
+DOD
+• Scalable to 241.05kWh
+• 90% Depth of Discharge
+• Floor Mounting
+• Easy installation
+• IP20 Protection Level
+• High Voltage and High Efficiency
+• Intelligent air cooling control
+
+=== PAGE 16 ===
+TECHNICAL SPECIFICATIONS
+V1.3 | 2025/07/17
+MODEL
+Nominal Voltage [Vdc]
+Operang Voltage [Vdc]
+Nominal Capacity [Ah]
+Nominal Capacity [kWh]
+Max. Charge/Discharge Current [A]
+Recommend Discharge Current [A]
+Peak Discharge Current [A]
+Baery Pack Round-Trip Efficiency [%]
+Depth of Discharge [%]
+Storage Temperature [°C]
+Operang Temperature [°C]
+Humidity [%]
+Cycle Life
+Communicaon
+Display
+Scalability
+Installaon Locaon
+Altude [m]
+Cooling Method
+Ingress Protecon
+Dimension (W*H*D) [mm]
+Weight Approximate [kg]
+Safety
+EMC
+Transportaon
+Rated Energy Range [kWh]
+CQ16
+51.2
+46.4 ~ 58.4
+314
+16.07
+240
+157
+470 @60S
+>92
+90
+-10 ~ 50
+Charge: 0 ~ 55, Discharge: -10 ~ 55
+5 ~ 95 (No Condensaon)
+6000 cycles, 0.5C 90%DOD,@70%SOH
+CAN
+Baery: LED*1, BOX: LED*6
+Max. 15 Modules in Series
+Indoor
+3000
+Intelligent air cooling
+IP20
+390*235*810
+128
+IEC 62619
+IEC 61000-6-1/2/3/4
+UN38.3
+64.28 ~ 241.05
+*Note: Min. 4 baeries per system

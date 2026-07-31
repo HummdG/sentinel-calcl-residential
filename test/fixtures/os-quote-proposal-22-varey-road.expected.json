@@ -1,0 +1,35 @@
+{
+  "_meta": {
+    "vendor": "OpenSolar (HSEnergy Residential)",
+    "type": "residential",
+    "pages": 18,
+    "verified": "2026-07-31",
+    "method": "read by hand from the page-tagged text; cashflow row cross-checked against the monthly table column sums"
+  },
+  "_traps": {
+    "summary_tiles": "p3 renders each figure ABOVE its caption: 4.6 / System Size, 8.0% / Rate of Return, £19,198 / Estimated net savings, £11,319 / Total System Price.",
+    "system_cost": "p11 reads '£30,517 Utility Bill Savings - £11,319 Net System Cost = £19,198 Estimated Net Savings'. The cost is the SUBTRAHEND, not the result.",
+    "solar_savings": "p11 cashflow row '2026 2,064 4,256 714 -73 787 11,319 0 (10532) (10532)'. The answer is column 5 of 9, headers shredded across earlier lines.",
+    "export_kwh": "no annual total stated; requires summing column 4 of the 12-row monthly table on p9.",
+    "battery_kwh": "p6 states 9.72 kWh 'assumed usable capacity' (derated MCS figure) and the p18 datasheet lists 10.24 as 'Battery Energy [kWh]'. The system total on p4 is the answer.",
+    "inverter_kw": "GENUINELY ABSENT. The EVO10 is a hybrid battery unit; p18 lists the EVO10-5H..10H range (5000-10000 W). Any value here is a hallucination.",
+    "os_payback": "'Payback 13 years' (p11) competes with 'Discounted Payback Period 20 Years 8 Months'.",
+    "os_roi": "'8.0% Rate of Return on Investment' competes with '170% Total Return on Investment'."
+  },
+  "fields": {
+    "customer_name": "Manish Shrestha",
+    "customer_address": "22 Varey Road",
+    "pv_size": 4.6,
+    "battery_kwh": 10.24,
+    "inverter_kw": null,
+    "annual_gen": 4256,
+    "annual_usage": 2064,
+    "system_cost": 11319.3,
+    "solar_savings": 787,
+    "export_kwh": 2384,
+    "export_pct": 56,
+    "os_payback": 13,
+    "os_25yr": 19198,
+    "os_roi": 8.0
+  }
+}

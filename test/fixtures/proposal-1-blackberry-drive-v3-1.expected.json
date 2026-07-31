@@ -1,0 +1,35 @@
+{
+  "_meta": {
+    "vendor": "OpenSolar (HSEnergy Residential)",
+    "type": "residential",
+    "pages": 19,
+    "verified": "2026-07-31",
+    "method": "read by hand from the page-tagged text; cashflow row cross-checked against the monthly table column sums"
+  },
+  "_traps": {
+    "summary_tiles": "p3 renders each figure ABOVE its caption: 9.2 kWp / System Size, 8.8% / Rate of Return, £35,841 / Estimated net savings, £18,839 / Total System Price.",
+    "system_cost": "p11 reads '£54,680 Utility Bill Savings - £18,839 Net System Cost = £35,841 Estimated Net Savings'.",
+    "solar_savings": "p11 cashflow row '2026 6,180 7,774 1,214 -229 1,443 18,839 0 (17396) (17396)', column 5. Note the year-1 'Utility Bill after' is NEGATIVE (-229), which is a plausible-looking wrong answer.",
+    "export_kwh": "no annual total; sum column 4 of the monthly table (3,013).",
+    "inverter_kw": "STATED here, unlike the other HSEnergy proposals. P4 'Inverter / 20 kW of Inverter Power'.",
+    "os_payback": "'Payback 12 years' competes with 'Discounted Payback Period 18 Years 7 Months'.",
+    "os_roi": "'8.8% Rate of Return on Investment' competes with '190% Total Return on Investment'.",
+    "os_25yr": "£35,841 net competes with '£54,680 Lifetime Bill Savings' (gross)."
+  },
+  "fields": {
+    "customer_name": "Anthony Parkins",
+    "customer_address": "1 Blackberry Drive",
+    "pv_size": 9.2,
+    "battery_kwh": 20.48,
+    "inverter_kw": 20,
+    "annual_gen": 7774,
+    "annual_usage": 6180,
+    "system_cost": 18839,
+    "solar_savings": 1443,
+    "export_kwh": 3013,
+    "export_pct": 39,
+    "os_payback": 12,
+    "os_25yr": 35841,
+    "os_roi": 8.8
+  }
+}

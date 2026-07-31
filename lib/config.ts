@@ -2,7 +2,7 @@
 //
 // Mirrors admin/class-settings-page.php::raw_defaults() from the WordPress plugin.
 // Every business constant has a default in code, overridable by a SENTINEL_* env
-// var. Secrets (Groq key, SMTP credentials) have no defaults. Because all
+// var. Secrets (Anthropic key, SMTP credentials) have no defaults. Because all
 // calculations run in server route handlers, none of this is ever shipped to the
 // browser.
 
@@ -78,17 +78,32 @@ export function getConstants(): Constants {
   };
 }
 
-export interface GroqConfig {
+export interface ExtractionConfig {
   apiKey: string;
-  model: string;
+  /** Tier 1: cheap, runs on every upload. */
+  primaryModel: string;
+  /** Tier 2: stronger, with page images; runs only when verification fails. */
+  escalationModel: string;
+  /** Character cap on the document text sent to the model. */
   maxChars: number;
+  /**
+   * Shared secret required by the extraction routes. Each call spends real credit, so an
+   * open endpoint is a standing cost-abuse risk. Blank disables the check. Acceptable
+   * for local development only.
+   */
+  sharedSecret: string;
+  /** Extractions allowed per IP per hour. */
+  rateLimitPerHour: number;
 }
 
-export function getGroqConfig(): GroqConfig {
+export function getExtractionConfig(): ExtractionConfig {
   return {
-    apiKey: process.env.GROQ_API_KEY ?? '',
-    model: process.env.GROQ_MODEL?.trim() || 'llama-3.3-70b-versatile',
-    maxChars: envInt(process.env.GROQ_MAX_CHARS, 120000),
+    apiKey: process.env.ANTHROPIC_API_KEY ?? '',
+    primaryModel: process.env.EXTRACT_MODEL_PRIMARY?.trim() || 'claude-haiku-4-5',
+    escalationModel: process.env.EXTRACT_MODEL_ESCALATION?.trim() || 'claude-opus-5',
+    maxChars: envInt(process.env.EXTRACT_MAX_CHARS, 200000),
+    sharedSecret: process.env.EXTRACT_SHARED_SECRET ?? '',
+    rateLimitPerHour: envInt(process.env.EXTRACT_RATE_LIMIT_PER_HOUR, 60),
   };
 }
 

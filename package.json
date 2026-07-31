@@ -7,9 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "fixtures": "tsx scripts/make-fixtures.mts",
+    "score": "tsx scripts/score-extraction.mts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.115.0",
     "chart.js": "^4.4.4",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.2",
@@ -25,6 +28,7 @@
     "@types/nodemailer": "^6.4.16",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "tsx": "^4.23.1",
     "typescript": "^5.7.0",
     "vitest": "^2.1.8"
   }

@@ -14,7 +14,7 @@ import type { Constants } from './config';
 const NON_ADDITIVITY_DISCOUNT = 0.1;
 
 // PHP round(): half away from zero. JS Math.round is half toward +Infinity, which
-// differs for negative .5 values — mirror PHP so parity holds for every input.
+// differs for negative .5 values. Mirror PHP so parity holds for every input.
 function phpRound(value: number, precision = 0): number {
   const f = Math.pow(10, precision);
   const n = value * f;
@@ -86,7 +86,7 @@ function sentinelUplift(
   let sentSeg = exportKwh * exportRateSentinel;
 
   // Flux arbitrage adjustment: export kWh above annual generation on a Flux tariff
-  // represents grid-charged battery cycling, not solar export — net off its cost.
+  // represents grid-charged battery cycling, not solar export. Net off its cost.
   let arbitrageKwh = 0;
   let gridChargingCost = 0;
   let fluxArbitrageWarning = false;

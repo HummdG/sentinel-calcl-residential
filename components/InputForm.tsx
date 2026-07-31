@@ -2,8 +2,9 @@
 
 import type { ReactNode } from 'react';
 import UploadZone from './UploadZone';
+import ProvenancePanel from './ProvenancePanel';
 import type { FormState } from '@/lib/form';
-import type { ParsedPdfResponse, Tariff, Usage } from '@/lib/types';
+import type { FieldProvenance, ParsedPdfResponse, Tariff, Usage } from '@/lib/types';
 
 // A field the extractor could not find is marked distinctly from one it filled: a blank
 // that looks ordinary is how a stale value passes for an extracted one.
@@ -101,6 +102,7 @@ interface Props {
   populated: Set<string>;
   missing: Set<string>;
   warnings: string[];
+  provenance: FieldProvenance[];
   onExtracted: (data: ParsedPdfResponse) => void;
   onCalculate: () => void;
   calculating: boolean;
@@ -121,6 +123,7 @@ export default function InputForm({
   populated,
   missing,
   warnings,
+  provenance,
   onExtracted,
   onCalculate,
   calculating,
@@ -143,6 +146,7 @@ export default function InputForm({
         </span>
       </p>
       <UploadZone onExtracted={onExtracted} warnings={warnings} />
+      <ProvenancePanel provenance={provenance} />
 
       <hr />
 
@@ -194,13 +198,13 @@ export default function InputForm({
         </span>
       </p>
       <div className="igrid t3">
-        <NumField id="solar_savings" label="Annual bill savings — yr 1" form={form} setField={setField} populated={populated} missing={missing} step="50" min="0" pre="£" />
+        <NumField id="solar_savings" label="Annual bill savings (yr 1)" form={form} setField={setField} populated={populated} missing={missing} step="50" min="0" pre="£" />
         <NumField id="export_kwh" label="Annual export to grid" form={form} setField={setField} populated={populated} missing={missing} step="100" min="0" unit="kWh/yr" />
         <NumField id="os_payback" label="Payback period" form={form} setField={setField} populated={populated} missing={missing} step="0.1" min="0" unit="years" />
       </div>
       <div className="igrid">
         <NumField id="os_25yr" label="25-year cumulative return" form={form} setField={setField} populated={populated} missing={missing} step="100" pre="£" />
-        <NumField id="os_roi" label="Rate of return on investment" form={form} setField={setField} populated={populated} missing={missing} step="0.1" min="0" unit="%" placeholder="—" />
+        <NumField id="os_roi" label="Rate of return on investment" form={form} setField={setField} populated={populated} missing={missing} step="0.1" min="0" unit="%" />
       </div>
 
       <hr />

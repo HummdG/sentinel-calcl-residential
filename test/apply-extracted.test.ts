@@ -7,8 +7,12 @@ import { describe, it, expect } from 'vitest';
 import { DEFAULT_FORM, applyExtracted, gateFailures, type FormState } from '../lib/form';
 import type { ExtractedFields } from '../lib/types';
 
-// A quote where the model found the spec but missed the year-1 saving — the failure that
+// A quote where the model found the spec but missed the year-1 saving. The failure that
 // let the old £3,733 demo default reach a customer-facing report.
+//
+// `solar_savings: null` is what "not found" now looks like. It used to be 0, which meant
+// a genuine zero and a missing value were the same thing to this merge. See the
+// legitimate-zero test at the bottom for the case that broke.
 const extraction: ExtractedFields = {
   customer_name: 'Manish Shrestha',
   customer_address: '22 Varey Road',
@@ -18,7 +22,7 @@ const extraction: ExtractedFields = {
   annual_gen: 4256,
   annual_usage: 2064,
   system_cost: 19198, // mis-read: this is the lifetime net-savings figure
-  solar_savings: 0, // not found
+  solar_savings: null, // not found
   export_kwh: 2382,
   os_payback: 13,
   os_25yr: 19198,
@@ -34,7 +38,7 @@ describe('applyExtracted', () => {
     expect(form.customer_name).toBe('Manish Shrestha');
     expect(populated.has('system_cost')).toBe(true);
 
-    // The gap is reported rather than filled — and critically NOT marked as populated.
+    // The gap is reported rather than filled. And critically NOT marked as populated.
     expect(form.solar_savings).toBe('');
     expect(populated.has('solar_savings')).toBe(false);
     expect(missing.has('solar_savings')).toBe(true);
@@ -42,7 +46,7 @@ describe('applyExtracted', () => {
 
   it('leaves the form incomplete when a required value was not found', () => {
     const { form } = applyExtracted(DEFAULT_FORM, extraction, ['solar_savings']);
-    expect(gateFailures(form)).toEqual(['Annual bill savings — yr 1']);
+    expect(gateFailures(form)).toEqual(['Annual bill savings (yr 1)']);
   });
 
   it('does not overwrite a figure the surveyor corrected by hand', () => {
@@ -73,6 +77,28 @@ describe('applyExtracted', () => {
     expect(missing.has('solar_savings')).toBe(false);
     expect(form.solar_savings).toBe('787');
     expect(gateFailures(form)).toEqual([]);
+  });
+
+  it('fills a legitimate zero the proposal actually states', () => {
+    // River House exports nothing: the proposal says "0% Export to grid" and every month
+    // of the export column is 0. The old `v > 0` guard skipped that, leaving the surveyor
+    // to hand-type a zero the document had already given them.
+    const zeroExport: ExtractedFields = { ...extraction, export_kwh: 0, battery_kwh: 0 };
+    const { form, populated, missing } = applyExtracted(DEFAULT_FORM, zeroExport, []);
+
+    expect(form.export_kwh).toBe('0');
+    expect(form.battery_kwh).toBe('0');
+    expect(populated.has('export_kwh')).toBe(true);
+    expect(populated.has('battery_kwh')).toBe(true);
+    expect(missing.has('export_kwh')).toBe(false);
+  });
+
+  it('still leaves a null field blank rather than writing a zero into it', () => {
+    // The other half of the same distinction: absent must not become 0, or an unstated
+    // figure silently becomes a real one in the report.
+    const { form, populated } = applyExtracted(DEFAULT_FORM, extraction, ['solar_savings']);
+    expect(form.solar_savings).toBe('');
+    expect(populated.has('solar_savings')).toBe(false);
   });
 });
 

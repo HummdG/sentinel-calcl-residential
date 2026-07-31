@@ -1,0 +1,35 @@
+{
+  "_meta": {
+    "vendor": "OpenSolar (Smartly Energy)",
+    "type": "commercial",
+    "pages": 14,
+    "verified": "2026-07-31",
+    "method": "read by hand from the page-tagged text; monthly 'Estimated Savings' column sums to exactly 6,063, corroborating the p3 tile",
+    "why_it_matters": "The only non-HSEnergy proposal in the set, and the only commercial one. It is the fixture that proves the extractor is not overfitted to one installer's template or to domestic-scale numbers."
+  },
+  "_traps": {
+    "export_kwh": "GENUINELY ZERO. P5 states '0% Export to grid' and every month of the export column is 0. This is a correct 0, not a missing value. The old pipeline could not express this: applyExtracted() skipped any value not > 0, so the surveyor had to type the zero by hand.",
+    "os_roi": "GENUINELY ABSENT. This proposal states no rate of return anywhere. Any value is a hallucination.",
+    "inverter_kw": "50 kW is stated on p4 ('50kW of Inverter Power', 1 x H350Plus). The p14 datasheet lists the whole H3 Plus range. 50/60/75/80/100/125, as decoys.",
+    "battery_kwh": "176.77 is the stated system total (11 x CQ16). Decoys: 159.09 kWh 'assumed usable capacity', 16.07 kWh per module on the p16 datasheet, and marketing copy 'Scalable from 64.28kWh to 241.05 kWh'.",
+    "annual_usage": "384,000 kWh. Commercial scale, roughly 186x the Varey Road figure. Any range check calibrated to domestic systems will misfire here.",
+    "system_cost": "p7 reads '£236,931 Utility Bill Savings - £83,946 Net System Cost = £152,985 Estimated Net Savings'. Note p3 labels the price 'excluding VAT'.",
+    "os_payback": "'Payback 11 years' on p7. Note the implied payback from cost/savings is 13.8 years (83,946 / 6,063). A 25% divergence that is genuine, so a tolerance tighter than ~30% would false-positive on this document."
+  },
+  "fields": {
+    "customer_name": "Stuart Sheils",
+    "customer_address": "River House, Castle Business Park",
+    "pv_size": 33.75,
+    "battery_kwh": 176.77,
+    "inverter_kw": 50,
+    "annual_gen": 28087,
+    "annual_usage": 384000,
+    "system_cost": 83946,
+    "solar_savings": 6063,
+    "export_kwh": 0,
+    "export_pct": 0,
+    "os_payback": 11,
+    "os_25yr": 152985,
+    "os_roi": null
+  }
+}

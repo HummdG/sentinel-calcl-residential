@@ -6,7 +6,7 @@
 define('ABSPATH', __DIR__);
 require __DIR__ . '/../../includes/class-calculator.php';
 
-// Default constants — mirrors Sentinel_Settings_Page::get_constants() defaults
+// Default constants, mirroring Sentinel_Settings_Page::get_constants() defaults
 // (pence values already converted to pounds).
 $constants = [
     'peak_shaving_per_kwh'  => 47.0,
