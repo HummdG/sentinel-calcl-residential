@@ -662,21 +662,6 @@ body { min-height: 100vh; }
 #sentinel-root .li { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--hs-muted); }
 #sentinel-root .ld { width: 10px; height: 10px; border-radius: 2px; }
 
-/* NOTE */
-#sentinel-root .note {
-  background: rgba(245,158,11,.08);
-  border: 1px solid rgba(245,158,11,.2);
-  border-radius: var(--radius-sm);
-  padding: 14px 16px;
-  margin-bottom: 20px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-#sentinel-root .ni { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-#sentinel-root .nt { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
-#sentinel-root .nt strong { color: var(--hs-amber); }
-
 /* FLUX ARBITRAGE WARNING */
 #sentinel-root .arbitrage-warn {
   display: none;

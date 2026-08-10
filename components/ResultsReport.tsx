@@ -232,17 +232,6 @@ export default function ResultsReport({ result: d, customerName, customerAddress
         </div>
       </div>
 
-      <div className="note">
-        <span className="ni">ℹ</span>
-        <span className="nt">
-          <strong>12 months free</strong> &mdash; all new Sentinel customers receive year 1 at no
-          cost. The total annual benefit shown is the year 1 figure with no subscription applied. From
-          month 13, Sentinel is <strong>£199/year</strong> (or £19.99/month). The 25-year cumulative
-          return and payback period deduct the subscription cost from year 2 onwards. Even after
-          subscription, Sentinel continues to significantly outperform solar + battery alone.
-        </span>
-      </div>
-
       <div className="ccard">
         <p className="ctitle">Cumulative returns: 25 year projection</p>
         <CumulativeChart data={d.chart_cumulative} />
