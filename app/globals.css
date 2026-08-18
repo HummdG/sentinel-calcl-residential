@@ -209,7 +209,10 @@ body { min-height: 100vh; }
 
 /* TARIFF TOGGLES */
 #sentinel-root .tgrid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 0; }
-@media(max-width:580px) { #sentinel-root .tgrid { grid-template-columns: 1fr; } }
+/* Order type has two options, not three; without this they sit in a 3-column grid with
+   a dead third cell. Same modifier convention as .igrid.t3 / .igrid.t4 above. */
+#sentinel-root .tgrid.t2 { grid-template-columns: repeat(2,1fr); }
+@media(max-width:580px) { #sentinel-root .tgrid, #sentinel-root .tgrid.t2 { grid-template-columns: 1fr; } }
 #sentinel-root .toption { position: relative; cursor: pointer; }
 #sentinel-root .toption input { position: absolute; opacity: 0; width: 0; height: 0; }
 #sentinel-root .tlabel {

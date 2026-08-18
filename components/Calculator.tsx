@@ -10,9 +10,17 @@ import {
   applyExtracted,
   buildCalcInput,
   gateFailures,
+  inferOrderType,
   type FormState,
 } from '@/lib/form';
-import type { CalcResult, FieldProvenance, ParsedPdfResponse, Tariff, Usage } from '@/lib/types';
+import type {
+  CalcResult,
+  FieldProvenance,
+  OrderType,
+  ParsedPdfResponse,
+  Tariff,
+  Usage,
+} from '@/lib/types';
 
 function DownloadIcon() {
   return (
@@ -53,6 +61,7 @@ function EmailIcon() {
 
 export default function Calculator() {
   const [form, setForm] = useState<FormState>(DEFAULT_FORM);
+  const [orderType, setOrderType] = useState<OrderType>('solar_battery');
   const [tariff, setTariff] = useState<Tariff>('standard');
   const [usage, setUsage] = useState<Usage>('daytime');
   const [inflation, setInflation] = useState<number>(7);
@@ -74,8 +83,8 @@ export default function Calculator() {
   const resultsRef = useRef<HTMLDivElement | null>(null);
 
   // Latest input state, so the stable runCalculate closure always reads fresh values.
-  const stateRef = useRef({ form, tariff, usage, inflation });
-  stateRef.current = { form, tariff, usage, inflation };
+  const stateRef = useRef({ form, tariff, usage, inflation, orderType });
+  stateRef.current = { form, tariff, usage, inflation, orderType };
 
   // Fields the surveyor has typed into since the last extraction. A second upload must
   // not clobber a hand-corrected figure.
@@ -90,7 +99,7 @@ export default function Calculator() {
   // rather than racing it.
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const gaps = gateFailures(form);
+  const gaps = gateFailures(form, orderType);
   const ready = gaps.length === 0;
   const readyRef = useRef(ready);
   readyRef.current = ready;
@@ -98,7 +107,10 @@ export default function Calculator() {
   // Resolves true when this call actually rendered, false when a newer request superseded it.
   const runCalculate = useCallback(async (): Promise<boolean> => {
     if (!readyRef.current) {
-      throw new Error('Missing required values: ' + gateFailures(stateRef.current.form).join(', '));
+      throw new Error(
+        'Missing required values: ' +
+          gateFailures(stateRef.current.form, stateRef.current.orderType).join(', ')
+      );
     }
     const s = stateRef.current;
     const seq = ++seqRef.current;
@@ -107,7 +119,7 @@ export default function Calculator() {
       const res = await fetch('/api/calculate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(buildCalcInput(s.form, s.tariff, s.usage, s.inflation)),
+        body: JSON.stringify(buildCalcInput(s.form, s.tariff, s.usage, s.inflation, s.orderType)),
       });
       if (!res.ok) throw new Error('Calculation failed');
       const data = (await res.json()) as CalcResult;
@@ -138,13 +150,13 @@ export default function Calculator() {
     }
   }, []);
 
-  // Live recalc when tariff / usage / inflation change. But NOT on mount.
+  // Live recalc when order type / tariff / usage / inflation change. But NOT on mount.
   useEffect(() => {
     if (!hasCalculatedRef.current) return;
     runCalculate().catch(() => {
       /* surfaced via calcError / stale */
     });
-  }, [tariff, usage, inflation, runCalculate]);
+  }, [orderType, tariff, usage, inflation, runCalculate]);
 
   // Any edit to a figure makes the report older than the inputs above it. Mark it stale
   // immediately, then close the gap with a debounced recalculation, so a corrected value
@@ -194,6 +206,7 @@ export default function Calculator() {
       preserved,
     } = applyExtracted(stateRef.current.form, data.fields, data.missing, editedRef.current);
     setForm(next);
+    setOrderType(inferOrderType(data.fields) ?? stateRef.current.orderType);
     setPopulated(pop);
     setMissing(miss);
     setWarnings(data.warnings ?? []);
@@ -233,7 +246,7 @@ export default function Calculator() {
   // calculation is absent from the exported PDF. The surveyor sees a corrected system cost
   // on screen and sends a PDF still showing the old one.
   const ensureFresh = useCallback(async () => {
-    const failures = gateFailures(stateRef.current.form);
+    const failures = gateFailures(stateRef.current.form, stateRef.current.orderType);
     if (failures.length) {
       throw new Error('Cannot produce a report yet. Still needed: ' + failures.join(', ') + '.');
     }
@@ -280,6 +293,8 @@ export default function Calculator() {
       <InputForm
         form={form}
         setField={setField}
+        orderType={orderType}
+        setOrderType={setOrderType}
         tariff={tariff}
         setTariff={setTariff}
         usage={usage}

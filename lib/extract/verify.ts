@@ -228,7 +228,8 @@ export function verifyExtraction(
   // +/-1%; it is a yardstick to check a sum against, never a better source than the sum.
   // Calling it `expectedExport` is what made it look authoritative enough to substitute.
   const claimedExport = num(claims.export_kwh?.value ?? null);
-  const pctUsable = exportPct !== null && gen !== null && exportPct >= 0 && exportPct <= 100;
+  const pctUsable =
+    exportPct !== null && gen !== null && gen > 0 && exportPct >= 0 && exportPct <= 100;
   const pctImpliedExport = pctUsable ? (gen! * exportPct!) / 100 : null;
 
   if (exportKwh === null && claimedExport !== null && pctImpliedExport !== null) {
@@ -281,8 +282,13 @@ export function verifyExtraction(
   }
 
   // GATE: export cannot exceed generation.
+  //
+  // Only where there IS generation. A battery-only quote states 0 kWh generated and a real
+  // export figure from grid-charged discharge, which is not a contradiction. Without the
+  // gen > 0 guard this gate fires on every such document, deletes a correctly read export
+  // and bills an escalation call to re-read a figure that was right the first time.
   const exp = num(values.export_kwh);
-  if (exp !== null && gen !== null && exp > gen) {
+  if (exp !== null && gen !== null && gen > 0 && exp > gen) {
     drop(
       ['export_kwh'],
       `Export to grid (${exp.toLocaleString()} kWh) exceeds total generation (${gen.toLocaleString()} kWh).`
@@ -291,7 +297,7 @@ export function verifyExtraction(
 
   // GATE: export must agree with the stated export percentage.
   const exp2 = num(values.export_kwh);
-  if (exp2 !== null && exportPct !== null && gen !== null && exportPct > 0) {
+  if (exp2 !== null && exportPct !== null && gen !== null && gen > 0 && exportPct > 0) {
     const expected = (gen * exportPct) / 100;
     if (expected > 0 && Math.abs(exp2 - expected) / expected > 0.15) {
       drop(

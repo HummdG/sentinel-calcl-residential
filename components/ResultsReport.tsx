@@ -20,8 +20,11 @@ export default function ResultsReport({ result: d, customerName, customerAddress
   const addr = customerAddress.trim();
 
   // Every figure comes from the calculation result, never from live form state. Otherwise
-  // a cell can belong to a newer edit than the numbers beside it.
+  // a cell can belong to a newer edit than the numbers beside it. The order type is read
+  // the same way, so the labels can never describe a mode the figures were not computed in.
   const osRoi = d.solar_roi;
+  const batteryOnly = d.order_type === 'battery_only';
+  const baselineLabel = batteryOnly ? 'Battery only' : 'Solar + Battery only';
 
   const dateStr = new Date().toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -68,18 +71,22 @@ export default function ResultsReport({ result: d, customerName, customerAddress
             Address: <strong>{addr}</strong>
           </div>
         )}
-        <div className="sys-item">
-          Solar PV: <strong>{d.pv_size}kWp</strong>
-        </div>
+        {!batteryOnly && (
+          <div className="sys-item">
+            Solar PV: <strong>{d.pv_size}kWp</strong>
+          </div>
+        )}
         <div className="sys-item">
           Battery: <strong>{d.battery_kwh}kWh</strong>
         </div>
         <div className="sys-item">
           Inverter: <strong>{d.inverter_kw}kW</strong>
         </div>
-        <div className="sys-item">
-          Annual generation: <strong>{gb(d.annual_gen)} kWh/yr</strong>
-        </div>
+        {!batteryOnly && (
+          <div className="sys-item">
+            Annual generation: <strong>{gb(d.annual_gen)} kWh/yr</strong>
+          </div>
+        )}
         <div className="sys-item">
           Annual consumption: <strong>{gb(d.annual_usage)} kWh/yr</strong>
         </div>
@@ -135,14 +142,24 @@ export default function ResultsReport({ result: d, customerName, customerAddress
 
       {d.flux_arbitrage_warning && (
         <div className="arbitrage-warn on">
-          &#9888; <strong>Flux arbitrage adjustment applied.</strong> This system&apos;s export kWh (
-          {gb(d.export_kwh)} kWh) exceeds its annual solar generation ({gb(d.annual_gen)} kWh),
-          meaning {gb(d.arbitrage_kwh)} kWh of the reported export represents grid-charged battery
-          cycling rather than solar export. A grid charging cost of 7p/kWh has been deducted from the
-          optimised export income to reflect the net position.{' '}
+          &#9888; <strong>Flux arbitrage adjustment applied.</strong>{' '}
+          {batteryOnly ? (
+            <>
+              This system has no solar generation, so all {gb(d.arbitrage_kwh)} kWh of the reported
+              export represents grid-charged battery cycling.
+            </>
+          ) : (
+            <>
+              This system&apos;s export kWh ({gb(d.export_kwh)} kWh) exceeds its annual solar
+              generation ({gb(d.annual_gen)} kWh), meaning {gb(d.arbitrage_kwh)} kWh of the reported
+              export represents grid-charged battery cycling rather than solar export.
+            </>
+          )}{' '}
+          A grid charging cost of 7p/kWh has been deducted from the optimised export income to
+          reflect the net position.{' '}
           <strong>
-            Surveyor note: please verify the export figure with the OpenSolar report before presenting
-            to the customer.
+            Surveyor note: please verify the export figure against the quote before presenting to the
+            customer.
           </strong>
         </div>
       )}
@@ -150,7 +167,7 @@ export default function ResultsReport({ result: d, customerName, customerAddress
       <div className="cgrid">
         <div className="card">
           <div className="chead">
-            <span className="chtitle">Solar + Battery only</span>
+            <span className="chtitle">{baselineLabel}</span>
             <span className="ostag">OpenSolar figures</span>
           </div>
           <div className="cbody">
@@ -238,11 +255,11 @@ export default function ResultsReport({ result: d, customerName, customerAddress
         <div className="legend">
           <div className="li">
             <div className="ld" style={{ background: '#f59e0b' }} />
-            Solar + Battery only
+            {baselineLabel}
           </div>
           <div className="li">
             <div className="ld" style={{ background: '#9333ea' }} />
-            Solar + Battery + Sentinel
+            {batteryOnly ? 'Battery + Sentinel' : 'Solar + Battery + Sentinel'}
           </div>
         </div>
       </div>
@@ -253,7 +270,7 @@ export default function ResultsReport({ result: d, customerName, customerAddress
         <div className="legend" style={{ marginTop: 10 }}>
           <div className="li">
             <div className="ld" style={{ background: '#f59e0b' }} />
-            Solar + Battery
+            {batteryOnly ? 'Battery only' : 'Solar + Battery'}
           </div>
           <div className="li">
             <div className="ld" style={{ background: '#9333ea' }} />+ Sentinel
@@ -262,17 +279,18 @@ export default function ResultsReport({ result: d, customerName, customerAddress
       </div>
 
       <p className="disc">
-        Solar + Battery figures sourced directly from OpenSolar report. Sentinel uplift figures are
-        estimates based on system size, battery capacity, usage pattern, tariff type, and Intelligent
-        Energy Partner residential scenario benchmarks (March 2026). Trading revenues are not
+        {batteryOnly
+          ? 'Battery-only figures sourced directly from the customer’s quote. Sentinel uplift figures are estimates based on battery capacity, usage pattern, tariff type, and Intelligent Energy Partner residential scenario benchmarks (March 2026).'
+          : 'Solar + Battery figures sourced directly from OpenSolar report. Sentinel uplift figures are estimates based on system size, battery capacity, usage pattern, tariff type, and Intelligent Energy Partner residential scenario benchmarks (March 2026).'}{' '} Trading revenues are not
         guaranteed. Sentinel market revenues shown net of 20% Intelligent Energy Partner trading fee
         and 20% Sentinel optimisation fee. AI Optimisation and market trading revenue are not fully
         additive as they share the same battery cycles; a 10% non-additivity adjustment is applied to
         their combined total. Sentinel bill savings are capped only where the OpenSolar baseline
         figure exceeds the customer&apos;s estimated total electricity spend, to prevent overstating
-        savings on anomalous system configurations. Where a Flux tariff is selected and the reported
-        export kWh exceeds annual solar generation, a grid charging cost of 7p/kWh is deducted from
-        the optimised export income to reflect the net cost of grid-charged battery arbitrage cycles.
+        savings on anomalous system configurations.{' '}
+        {batteryOnly
+          ? 'This system has no solar generation, so a grid charging cost of 7p/kWh is deducted from the optimised export income on every exported kWh where a Flux tariff is selected, reflecting the net cost of grid-charged battery arbitrage cycles.'
+          : 'Where a Flux tariff is selected and the reported export kWh exceeds annual solar generation, a grid charging cost of 7p/kWh is deducted from the optimised export income to reflect the net cost of grid-charged battery arbitrage cycles.'}{' '}
         Sentinel subscription cost (£199/yr) deducted from year 2 onwards in Sentinel cumulative
         figures. Rate of return with Sentinel is calculated from 25-year cumulative return relative to
         system cost. Energy price inflation applied at {d.inflation}% per annum to cumulative

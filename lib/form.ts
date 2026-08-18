@@ -2,7 +2,7 @@
 // safe to use in client components. Default seed values mirror templates/
 // calculator-template.php.
 
-import type { CalcInput, ExtractedFields, Tariff, Usage } from './types';
+import type { CalcInput, ExtractedFields, OrderType, Tariff, Usage } from './types';
 
 export interface FormState {
   customer_name: string;
@@ -50,11 +50,21 @@ export const DEFAULT_FORM: FormState = {
 // What must be supplied before a report can be produced. `zeroOk` fields are legitimately
 // zero on some systems. No battery, no export. So they must be FILLED IN but are allowed
 // to be 0; the rest must be positive.
-export const REQUIRED_FIELDS: { id: keyof FormState; label: string; zeroOk?: boolean }[] = [
-  { id: 'pv_size', label: 'Solar PV size' },
+//
+// `solarOnly` fields have no meaning at all on a battery-only order and are skipped
+// entirely there. They stay strictly positive on a solar order rather than becoming
+// zeroOk, because on a solar job a blank PV figure is a mis-extraction, not a fact, and
+// letting it through is how "Solar PV: 0kWp" reaches a customer-facing report.
+export const REQUIRED_FIELDS: {
+  id: keyof FormState;
+  label: string;
+  zeroOk?: boolean;
+  solarOnly?: boolean;
+}[] = [
+  { id: 'pv_size', label: 'Solar PV size', solarOnly: true },
   { id: 'battery_kwh', label: 'Battery capacity', zeroOk: true },
   { id: 'inverter_kw', label: 'Inverter power rating', zeroOk: true },
-  { id: 'annual_gen', label: 'Annual generation' },
+  { id: 'annual_gen', label: 'Annual generation', solarOnly: true },
   { id: 'annual_usage', label: 'Annual consumption' },
   { id: 'system_cost', label: 'Total system cost' },
   { id: 'solar_savings', label: 'Annual bill savings (yr 1)' },
@@ -64,9 +74,13 @@ export const REQUIRED_FIELDS: { id: keyof FormState; label: string; zeroOk?: boo
 ];
 
 // Labels of the required fields still blank or non-positive; empty when ready to calculate.
-export function gateFailures(f: FormState): string[] {
+export function gateFailures(
+  f: FormState,
+  orderType: OrderType = 'solar_battery'
+): string[] {
   const out: string[] = [];
   for (const field of REQUIRED_FIELDS) {
+    if (field.solarOnly && orderType === 'battery_only') continue;
     const raw = (f[field.id] || '').trim();
     if (raw === '') {
       out.push(field.label);
@@ -103,13 +117,18 @@ export function buildCalcInput(
   f: FormState,
   tariff: Tariff,
   usage: Usage,
-  inflation: number
+  inflation: number,
+  orderType: OrderType = 'solar_battery'
 ): CalcInput {
+  // Battery-only pins the two solar figures to 0 rather than sending whatever is still
+  // sitting in the (now hidden) inputs. A surveyor who typed a PV size and then switched
+  // mode would otherwise carry that stale number into the calculation and onto the report.
+  const batteryOnly = orderType === 'battery_only';
   return {
-    pv_size: num(f.pv_size),
+    pv_size: batteryOnly ? 0 : num(f.pv_size),
     battery_kwh: num(f.battery_kwh),
     inverter_kw: num(f.inverter_kw),
-    annual_gen: num(f.annual_gen),
+    annual_gen: batteryOnly ? 0 : num(f.annual_gen),
     annual_usage: num(f.annual_usage),
     system_cost: num(f.system_cost),
     solar_savings: num(f.solar_savings),
@@ -123,7 +142,20 @@ export function buildCalcInput(
     tariff,
     usage,
     inflation,
+    order_type: orderType,
   };
+}
+
+// What an extraction implies about the order type, or null to leave the surveyor's choice
+// alone. Acts only on figures the document actually STATES: `null` means "not in the
+// document" (see the note on ExtractedFields in types.ts), and reading a battery-only job
+// out of a silence is exactly the guess the gate exists to prevent. An explicit 0 kWp and
+// 0 kWh/yr against a real battery is a battery-only quote; any positive solar figure is a
+// solar one, which also stops the mode sticking when a solar quote follows a battery one.
+export function inferOrderType(f: ExtractedFields): OrderType | null {
+  if ((f.pv_size ?? 0) > 0 || (f.annual_gen ?? 0) > 0) return 'solar_battery';
+  if (f.pv_size === 0 && f.annual_gen === 0 && (f.battery_kwh ?? 0) > 0) return 'battery_only';
+  return null;
 }
 
 // Populate fields the PDF provided (numeric > 0, text non-empty), preserving existing

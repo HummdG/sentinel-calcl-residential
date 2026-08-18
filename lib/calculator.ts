@@ -4,8 +4,14 @@
 // the PHP exactly, including the two hardenings the v7.4 reference HTML lacks:
 //   1. net_factor clamped at 0 (fees summing > 100% can't produce negative revenue)
 //   2. divide-by-zero guards on the peak/trade split (raw_combined > 0)
+//
+// Two further, DELIBERATE divergences from the PHP, both reachable only when
+// order_type is 'battery_only', a mode the PHP has no concept of, so the parity
+// scenarios in test/golden.json are unaffected:
+//   3. the Flux arbitrage adjustment fires on zero generation (see sentinelUplift)
+//   4. the monthly chart drops the solar seasonal curve (see buildMonthlyChart)
 
-import type { CalcInput, CalcResult, ChartSeries, Tariff, Usage } from './types';
+import type { CalcInput, CalcResult, ChartSeries, OrderType, Tariff, Usage } from './types';
 import type { Constants } from './config';
 
 // AI Optimisation and market trading revenue are not fully additive: they share
@@ -47,7 +53,8 @@ function sentinelUplift(
   dayRate: number,
   nightRate: number,
   annualConsumption: number,
-  annualGen: number
+  annualGen: number,
+  orderType: OrderType
 ): Uplift {
   // effective_import_rate must be in scope when the bill-savings cap is applied
   // below, so it is set inside every branch of this tariff block.
@@ -87,10 +94,18 @@ function sentinelUplift(
 
   // Flux arbitrage adjustment: export kWh above annual generation on a Flux tariff
   // represents grid-charged battery cycling, not solar export. Net off its cost.
+  //
+  // The `annualGen > 0` clause is a guard against an UNFILLED figure, not a statement
+  // about the system: with 0 standing in for "not entered", firing here would slap an
+  // arbitrage deduction on every solar job whose generation was still blank. A
+  // battery-only order says the zero is real, and then the adjustment is not merely
+  // safe but required. With no panels, every exported kWh came out of the grid, which
+  // is exactly the cost flux_charge_rate exists to recover.
   let arbitrageKwh = 0;
   let gridChargingCost = 0;
   let fluxArbitrageWarning = false;
-  if (tariff === 'flux' && annualGen > 0 && exportKwh > annualGen) {
+  const genIsKnownZero = orderType === 'battery_only';
+  if (tariff === 'flux' && (annualGen > 0 || genIsKnownZero) && exportKwh > annualGen) {
     arbitrageKwh = exportKwh - annualGen;
     gridChargingCost = arbitrageKwh * c.flux_charge_rate;
     sentSeg = Math.max(0, sentSeg - gridChargingCost);
@@ -252,10 +267,21 @@ function buildCumulativeChart(
   return { labels, solar, sentinel };
 }
 
-function buildMonthlyChart(c: Constants, solarAnnual: number, sentYr2: number): ChartSeries {
+function buildMonthlyChart(
+  c: Constants,
+  solarAnnual: number,
+  sentYr2: number,
+  orderType: OrderType
+): ChartSeries {
+  // c.mw is a solar irradiance curve (Jan 3.5% -> Jul 13.4%). It is the right shape for a
+  // system whose benefit comes from generation, and the wrong one for a battery, whose
+  // peak-shaving and trading revenue does not collapse in December. Battery-only spreads
+  // the year evenly instead of drawing a summer hump the customer would never see.
+  const weights =
+    orderType === 'battery_only' ? new Array<number>(12).fill(1 / 12) : c.mw;
   const solar: number[] = [];
   const sentinel: number[] = [];
-  for (const weight of c.mw) {
+  for (const weight of weights) {
     solar.push(phpRound(solarAnnual * weight));
     sentinel.push(phpRound(sentYr2 * weight));
   }
@@ -267,6 +293,10 @@ function buildMonthlyChart(c: Constants, solarAnnual: number, sentYr2: number): 
 }
 
 export function calculate(p: CalcInput, c: Constants): CalcResult {
+  // Absent means solar: the field is optional so the PHP-derived golden scenarios, which
+  // predate it, still describe exactly the calculation they were frozen against.
+  const orderType: OrderType = p.order_type ?? 'solar_battery';
+
   const up = sentinelUplift(
     c,
     p.battery_kwh,
@@ -278,7 +308,8 @@ export function calculate(p: CalcInput, c: Constants): CalcResult {
     p.dn_day / 100,
     p.dn_night / 100,
     p.annual_usage,
-    p.annual_gen
+    p.annual_gen,
+    orderType
   );
 
   // Headline "extra annual benefit" uses year 1 (subscription-free).
@@ -309,7 +340,12 @@ export function calculate(p: CalcInput, c: Constants): CalcResult {
     p.inflation,
     p.os_25yr
   );
-  const chartMonthly = buildMonthlyChart(c, up.solar_total_annual, up.sent_total_yr2);
+  const chartMonthly = buildMonthlyChart(
+    c,
+    up.solar_total_annual,
+    up.sent_total_yr2,
+    orderType
+  );
 
   // RoI (IRR) on the same growth basis as the customer's OpenSolar RoI.
   const osRoi = p.os_roi ?? 0;
@@ -355,6 +391,7 @@ export function calculate(p: CalcInput, c: Constants): CalcResult {
     system_cost: p.system_cost,
     inflation: p.inflation,
     export_kwh: p.export_kwh,
+    order_type: orderType,
 
     flux_arbitrage_warning: up.flux_arbitrage_warning,
     arbitrage_kwh: phpRound(up.arbitrage_kwh),

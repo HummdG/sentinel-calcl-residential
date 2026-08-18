@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { calculate } from '@/lib/calculator';
 import { getConstants } from '@/lib/config';
-import type { CalcInput, Tariff, Usage } from '@/lib/types';
+import type { CalcInput, OrderType, Tariff, Usage } from '@/lib/types';
 
 export const runtime = 'nodejs';
 
 const TARIFFS: Tariff[] = ['standard', 'daynight', 'flux'];
 const USAGES: Usage[] = ['daytime', 'balanced', 'evening'];
+const ORDER_TYPES: OrderType[] = ['solar_battery', 'battery_only'];
 
 function num(v: unknown): number {
   const n = Number.parseFloat(String(v));
@@ -23,6 +24,11 @@ export async function POST(req: Request) {
 
   const tariff = TARIFFS.includes(body.tariff as Tariff) ? (body.tariff as Tariff) : 'standard';
   const usage = USAGES.includes(body.usage as Usage) ? (body.usage as Usage) : 'balanced';
+  // Anything unrecognised falls back to the solar case, which is the conservative one:
+  // it never applies the battery-only Flux deduction on the strength of a malformed field.
+  const orderType = ORDER_TYPES.includes(body.order_type as OrderType)
+    ? (body.order_type as OrderType)
+    : 'solar_battery';
 
   const input: CalcInput = {
     pv_size: num(body.pv_size),
@@ -42,6 +48,7 @@ export async function POST(req: Request) {
     tariff,
     usage,
     inflation: num(body.inflation),
+    order_type: orderType,
   };
 
   const result = calculate(input, getConstants());

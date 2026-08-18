@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import UploadZone from './UploadZone';
 import ProvenancePanel from './ProvenancePanel';
 import type { FormState } from '@/lib/form';
-import type { FieldProvenance, ParsedPdfResponse, Tariff, Usage } from '@/lib/types';
+import type { FieldProvenance, OrderType, ParsedPdfResponse, Tariff, Usage } from '@/lib/types';
 
 // A field the extractor could not find is marked distinctly from one it filled: a blank
 // that looks ordinary is how a stale value passes for an extracted one.
@@ -91,6 +91,8 @@ const SCENARIOS: { label: string; value: number }[] = [
 interface Props {
   form: FormState;
   setField: (id: keyof FormState, v: string) => void;
+  orderType: OrderType;
+  setOrderType: (o: OrderType) => void;
   tariff: Tariff;
   setTariff: (t: Tariff) => void;
   usage: Usage;
@@ -112,6 +114,8 @@ interface Props {
 export default function InputForm({
   form,
   setField,
+  orderType,
+  setOrderType,
   tariff,
   setTariff,
   usage,
@@ -129,6 +133,7 @@ export default function InputForm({
   calculating,
   gaps,
 }: Props) {
+  const batteryOnly = orderType === 'battery_only';
   return (
     <div id="inputs-section">
       <span className="badge">Sentinel EMS™</span>
@@ -175,13 +180,42 @@ export default function InputForm({
 
       <hr />
 
+      {/* SECTION A0: ORDER TYPE */}
+      <p className="slabel">Order type</p>
+      <div className="tgrid t2">
+        <label className="toption">
+          <input type="radio" name="order_type" value="solar_battery" checked={!batteryOnly} onChange={() => setOrderType('solar_battery')} />
+          <span className="tlabel">
+            <span className="tname">Solar + Battery</span>
+            <span className="tdesc">PV, storage and Sentinel EMS</span>
+          </span>
+        </label>
+        <label className="toption">
+          <input type="radio" name="order_type" value="battery_only" checked={batteryOnly} onChange={() => setOrderType('battery_only')} />
+          <span className="tlabel">
+            <span className="tname">Battery only</span>
+            <span className="tdesc">Storage and Sentinel EMS, no solar</span>
+          </span>
+        </label>
+      </div>
+
+      <hr />
+
       {/* SECTION A: SYSTEM SPEC */}
+      {/* The two solar figures are hidden rather than made optional on a battery-only
+          order: there is nothing for the surveyor to enter, and an empty box that no
+          longer blocks Calculate reads as one they forgot. buildCalcInput() pins both
+          to 0, so anything typed before the switch cannot reach the report. */}
       <p className="slabel">System specification</p>
-      <div className="igrid t4">
-        <NumField id="pv_size" label="Solar PV size" form={form} setField={setField} populated={populated} missing={missing} step="0.1" min="0" unit="kWp" />
+      <div className={batteryOnly ? 'igrid' : 'igrid t4'}>
+        {!batteryOnly && (
+          <NumField id="pv_size" label="Solar PV size" form={form} setField={setField} populated={populated} missing={missing} step="0.1" min="0" unit="kWp" />
+        )}
         <NumField id="battery_kwh" label="Battery capacity" form={form} setField={setField} populated={populated} missing={missing} step="0.5" min="0" unit="kWh" />
         <NumField id="inverter_kw" label="Inverter power rating" form={form} setField={setField} populated={populated} missing={missing} step="0.1" min="0" unit="kW" />
-        <NumField id="annual_gen" label="Annual generation" form={form} setField={setField} populated={populated} missing={missing} step="100" min="0" unit="kWh/yr" />
+        {!batteryOnly && (
+          <NumField id="annual_gen" label="Annual generation" form={form} setField={setField} populated={populated} missing={missing} step="100" min="0" unit="kWh/yr" />
+        )}
       </div>
       <div className="igrid">
         <NumField id="annual_usage" label="Annual consumption" form={form} setField={setField} populated={populated} missing={missing} step="100" min="0" unit="kWh/yr" />
@@ -192,9 +226,9 @@ export default function InputForm({
 
       {/* SECTION B: OPENSOLAR FIGURES */}
       <p className="slabel">
-        Solar &amp; battery figures{' '}
+        {batteryOnly ? 'Battery figures' : 'Solar & battery figures'}{' '}
         <span style={{ ...italic, color: 'rgba(245,158,11,0.8)' }}>
-          enter directly from OpenSolar report
+          {batteryOnly ? 'enter directly from the quote' : 'enter directly from OpenSolar report'}
         </span>
       </p>
       <div className="igrid t3">

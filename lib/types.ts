@@ -3,6 +3,12 @@
 export type Tariff = 'standard' | 'daynight' | 'flux';
 export type Usage = 'daytime' | 'balanced' | 'evening';
 
+// What was sold. `battery_only` means the job genuinely has no solar, as opposed to a
+// solar job whose PV figures simply haven't been entered yet. Keeping those two apart is
+// the whole point of the selector: the form gate, the Flux arbitrage adjustment and the
+// report all need to know which one they are looking at, and a bare 0 cannot tell them.
+export type OrderType = 'solar_battery' | 'battery_only';
+
 export interface CalcInput {
   pv_size: number;
   battery_kwh: number;
@@ -21,6 +27,9 @@ export interface CalcInput {
   tariff: Tariff;
   usage: Usage;
   inflation: number;
+  // Optional so the frozen PHP-parity scenarios in test/golden.json stay valid: PHP has no
+  // order type, and every one of those cases is a solar job. Absent means solar_battery.
+  order_type?: OrderType;
 }
 
 export interface ChartSeries {
@@ -65,6 +74,9 @@ export interface CalcResult {
   system_cost: number;
   inflation: number;
   export_kwh: number;
+  // Echoed so ResultsReport branches off the calculation snapshot rather than live form
+  // state, the same rule every other cell on the report follows.
+  order_type: OrderType;
 
   flux_arbitrage_warning: boolean;
   arbitrage_kwh: number;

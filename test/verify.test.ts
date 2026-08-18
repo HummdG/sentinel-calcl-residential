@@ -345,6 +345,26 @@ describe('arithmetic gates catch the real historical failures', () => {
     expect(result.values.export_kwh).toBeNull();
     expect(result.escalate).toBe(true);
   });
+
+  it('does not treat export without generation as a contradiction', () => {
+    // A battery-only quote states no generation and a real export figure from
+    // grid-charged discharge. "Export exceeds generation" is an arithmetic identity only
+    // where there is generation to exceed; applied to zero it deleted a correctly read
+    // export on every such document and billed an escalation to re-read it.
+    //
+    // The gate above still fires whenever generation is genuinely stated, which is the
+    // case it was written for.
+    const claims = perfectClaims(fx());
+    claims.annual_gen = { ...claims.annual_gen, value: 0 } as never;
+    claims.pv_size = { ...claims.pv_size, value: 0 } as never;
+
+    const result = verifyExtraction(claims, fx().text);
+
+    expect(result.values.export_kwh).toBe(2384);
+    expect(result.provenance.find((p) => p.field === 'export_kwh')!.status).toBe('verified');
+    expect(result.missing).not.toContain('export_kwh');
+    expect(result.escalate).toBe(false);
+  });
 });
 
 describe('the Octopus Flux regression', () => {
