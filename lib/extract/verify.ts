@@ -115,12 +115,28 @@ function evidenceHolds(
     };
   }
 
-  if (norm(body).includes(norm(evidence))) return { state: 'held' };
+  // A value summed from several lines is quoted as those lines joined by an ellipsis:
+  // "23.3kWh of Battery Storage ... 4.66kWh of Battery Storage" for a proposal that lists
+  // two battery units and no total. That joined string is not a span of the page, but
+  // each fragment is, and that is all grounding needs to prove. Fragments under 4
+  // characters are dropped as separators rather than checked, since something like "kWh"
+  // would match almost any page.
+  const fragments = evidence
+    .split(/\s*(?:\.{3}|…)\s*/)
+    .map(norm)
+    .filter((f) => f.length >= 4);
+  if (fragments.length === 0) return { state: 'refuted', note: 'no source text quoted' };
+  const holdsOn = (text: string) => {
+    const hay = norm(text);
+    return fragments.every((f) => hay.includes(f));
+  };
+
+  if (holdsOn(body)) return { state: 'held' };
 
   // Fall back to a whole-document search: pdf.js sometimes splits a visually single row
   // across a page boundary, so an otherwise sound quote can cite the neighbouring page.
   for (const [n, text] of pages) {
-    if (n !== page && norm(text).includes(norm(evidence))) {
+    if (n !== page && holdsOn(text)) {
       return { state: 'held', note: `quote found on page ${n}, not the cited page ${page}` };
     }
   }
@@ -194,7 +210,6 @@ export function verifyExtraction(
   const usage = num(values.annual_usage);
   const cost = num(values.system_cost);
   const savings = num(values.solar_savings);
-  const exportKwh = num(values.export_kwh);
   const exportPct = num(values.export_pct);
   const payback = num(values.os_payback);
   const lifetime = num(values.os_25yr);
@@ -210,6 +225,33 @@ export function verifyExtraction(
       }
     }
   };
+
+  // Prefer a sum done here over one done by the model. When the model transcribed the
+  // twelve monthly figures and every one of them appears in the document, their total is
+  // grounded figure by figure, which is stronger than any quote of the model's own sum.
+  // The percentage gates below still check the result.
+  const monthly = claims.export_monthly ?? [];
+  if (monthly.length === 12 && pages.size > 0) {
+    const docTokens = new Set(
+      [...pages.values()].flatMap((t) => norm(t).split(/[^0-9.]+/)).filter(Boolean)
+    );
+    if (monthly.every((m) => m >= 0 && docTokens.has(String(m)))) {
+      const sum = Math.round(monthly.reduce((a, b) => a + b, 0));
+      const modelSaid = num(claims.export_kwh?.value ?? null);
+      values.export_kwh = sum;
+      const p = provenance.find((x) => x.field === 'export_kwh');
+      if (p) {
+        p.value = sum;
+        p.status = 'verified';
+        p.note =
+          modelSaid !== null && Math.round(modelSaid) !== sum
+            ? `summed from the twelve monthly figures (the model's own total was ${modelSaid.toLocaleString()})`
+            : 'summed from the twelve monthly figures';
+      }
+    }
+  }
+
+  const exportKwh = num(values.export_kwh);
 
   // export_kwh is the one field that is normally a SUM rather than a printed figure: the
   // annual total appears nowhere, so the model adds up a twelve-row monthly column. Its
@@ -228,8 +270,9 @@ export function verifyExtraction(
   // +/-1%; it is a yardstick to check a sum against, never a better source than the sum.
   // Calling it `expectedExport` is what made it look authoritative enough to substitute.
   const claimedExport = num(claims.export_kwh?.value ?? null);
-  const pctUsable =
-    exportPct !== null && gen !== null && gen > 0 && exportPct >= 0 && exportPct <= 100;
+  // No upper bound: a battery on a Flux tariff exports grid-charged energy as well as
+  // solar, and Murray Road states "327% Export to grid" (5,809 of 1,777 kWh generated).
+  const pctUsable = exportPct !== null && gen !== null && gen > 0 && exportPct >= 0;
   const pctImpliedExport = pctUsable ? (gen! * exportPct!) / 100 : null;
 
   if (exportKwh === null && claimedExport !== null && pctImpliedExport !== null) {
@@ -252,7 +295,7 @@ export function verifyExtraction(
     // Nothing usable from the model: fall back to the percentage. Less accurate, and the
     // provenance says so rather than presenting it as something read off the page.
     const derived = Math.round(pctImpliedExport);
-    if (derived >= 0 && derived <= gen!) {
+    if (derived >= 0) {
       values.export_kwh = derived;
       const p = provenance.find((x) => x.field === 'export_kwh');
       if (p) {
@@ -281,18 +324,35 @@ export function verifyExtraction(
     );
   }
 
-  // GATE: export cannot exceed generation.
+  // GATE: export cannot exceed generation, unless the document itself says it does.
   //
   // Only where there IS generation. A battery-only quote states 0 kWh generated and a real
   // export figure from grid-charged discharge, which is not a contradiction. Without the
   // gen > 0 guard this gate fires on every such document, deletes a correctly read export
   // and bills an escalation call to re-read a figure that was right the first time.
+  //
+  // The same is true of a solar system with a large battery on Flux: it exports grid-
+  // charged energy too. Murray Road prints "327% Export to grid" against 1,777 kWh
+  // generated, and its monthly column really does sum to 5,809. So when a stated
+  // percentage above 100 corroborates the figure, it is kept with a warning; the
+  // calculator's Flux arbitrage adjustment exists for exactly this case. Without that
+  // corroboration it is still most likely a misread column, and is dropped.
   const exp = num(values.export_kwh);
   if (exp !== null && gen !== null && gen > 0 && exp > gen) {
-    drop(
-      ['export_kwh'],
-      `Export to grid (${exp.toLocaleString()} kWh) exceeds total generation (${gen.toLocaleString()} kWh).`
-    );
+    const statedAboveGen =
+      exportPct !== null &&
+      exportPct > 100 &&
+      Math.abs(exp - (gen * exportPct) / 100) / ((gen * exportPct) / 100) <= 0.15;
+    if (statedAboveGen) {
+      warnings.push(
+        `Export to grid (${exp.toLocaleString()} kWh) is above solar generation (${gen.toLocaleString()} kWh), as the proposal states (${exportPct}%). This is grid-charged battery export; select the Smart / Flux tariff if that is what the customer is on.`
+      );
+    } else {
+      drop(
+        ['export_kwh'],
+        `Export to grid (${exp.toLocaleString()} kWh) exceeds total generation (${gen.toLocaleString()} kWh).`
+      );
+    }
   }
 
   // GATE: export must agree with the stated export percentage.
@@ -336,7 +396,7 @@ export function verifyExtraction(
     const perKwp = cost / pv;
     if (perKwp < 900 || perKwp > 4500) {
       warnings.push(
-        `System cost works out at £${Math.round(perKwp).toLocaleString()} per kWp, outside the usual £900-£4,500 range.`
+        `System cost works out at £${Math.round(perKwp).toLocaleString()} per kWp, outside the usual £900-£4,500 range. This range is for the solar alone, so a large battery or other extras in the price will push it above. Expected in that case; otherwise check the system cost and PV size.`
       );
     }
   }

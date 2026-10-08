@@ -1,23 +1,21 @@
-// Faithful TypeScript port of includes/class-calculator.php (Sentinel_Calculator).
+// TypeScript port of includes/class-calculator.php (Sentinel_Calculator).
 //
 // SERVER-ONLY: keeps the formulas and constants off the client. Semantics match
-// the PHP exactly, including the two hardenings the v7.4 reference HTML lacks:
-//   1. net_factor clamped at 0 (fees summing > 100% can't produce negative revenue)
-//   2. divide-by-zero guards on the peak/trade split (raw_combined > 0)
+// the PHP exactly, except for these DELIBERATE divergences:
 //
-// Two further, DELIBERATE divergences from the PHP, both reachable only when
-// order_type is 'battery_only', a mode the PHP has no concept of, so the parity
-// scenarios in test/golden.json are unaffected:
-//   3. the Flux arbitrage adjustment fires on zero generation (see sentinelUplift)
-//   4. the monthly chart drops the solar seasonal curve (see buildMonthlyChart)
+// Residential, applied to every order:
+//   1. no market trading revenue, no IEP/Sentinel fees and no non-additivity discount.
+//      AI Optimisation is the gross peak-shaving figure (see sentinelUplift). Residential
+//      customers are no longer offered trading, and the fees and the 10% discount only
+//      ever existed because of it. test/php-golden.php reproduces this from the PHP.
+//
+// Reachable only when order_type is 'battery_only', a mode the PHP has no concept of,
+// so the parity scenarios in test/golden.json are unaffected:
+//   2. the Flux arbitrage adjustment fires on zero generation (see sentinelUplift)
+//   3. the monthly chart drops the solar seasonal curve (see buildMonthlyChart)
 
 import type { CalcInput, CalcResult, ChartSeries, OrderType, Tariff, Usage } from './types';
 import type { Constants } from './config';
-
-// AI Optimisation and market trading revenue are not fully additive: they share
-// the same battery cycles and degradation budget. A 10% discount is applied to
-// their combined total before it is split back into the two line items.
-const NON_ADDITIVITY_DISCOUNT = 0.1;
 
 // PHP round(): half away from zero. JS Math.round is half toward +Infinity, which
 // differs for negative .5 values. Mirror PHP so parity holds for every input.
@@ -33,7 +31,6 @@ interface Uplift {
   sent_bill: number;
   sent_seg: number;
   sent_peak: number;
-  sent_trade: number;
   sent_total_yr1: number;
   sent_total_yr2: number;
   solar_total_annual: number;
@@ -77,9 +74,8 @@ function sentinelUplift(
   }
 
   const uFactor = c.um[usage];
-  const tMult = c.tm[tariff];
 
-  // Sentinel bill savings: conditional cap (only when the OpenSolar figure itself
+  // Sentinel bill savings: conditional cap (only when the proposal's figure itself
   // exceeds the customer's total possible spend) + baseline floor.
   const totalPossibleSpend = annualConsumption * effectiveImportRate;
   const uncappedSentBill = solarSavings * (1 + c.bill_up[tariff]);
@@ -112,19 +108,12 @@ function sentinelUplift(
     fluxArbitrageWarning = true;
   }
 
-  // Both the IEP fee (20%) and the Sentinel fee (20%) are levied on the combined
-  // peak-shaving + trading gross (shared battery cycles), then a 10% non-additivity
-  // discount, then split back proportionally so both line items display separately.
-  const netFactor = Math.max(0, 1 - c.iep_fee - c.sentinel_fee);
-  const sentPeakRaw = battery * c.peak_shaving_per_kwh * uFactor;
-  const sentTradeRaw = battery * c.trading_per_kwh * tMult * uFactor;
+  // AI Optimisation (peak shaving), gross. The PHP nets this and market trading of a 20%
+  // IEP fee and a 20% Sentinel fee, then takes 10% off for the two sharing battery
+  // cycles. With trading gone, none of the three applies (divergence 1 above).
+  const sentPeak = battery * c.peak_shaving_per_kwh * uFactor;
 
-  const rawCombined = sentPeakRaw + sentTradeRaw;
-  const sentCombined = rawCombined * netFactor * (1 - NON_ADDITIVITY_DISCOUNT);
-  const sentPeak = rawCombined > 0 ? sentCombined * (sentPeakRaw / rawCombined) : 0;
-  const sentTrade = rawCombined > 0 ? sentCombined * (sentTradeRaw / rawCombined) : 0;
-
-  const sentTotalYr1 = sentBill + sentSeg + sentPeak + sentTrade;
+  const sentTotalYr1 = sentBill + sentSeg + sentPeak;
   const sentTotalYr2 = sentTotalYr1 - c.sub;
 
   return {
@@ -132,7 +121,6 @@ function sentinelUplift(
     sent_bill: sentBill,
     sent_seg: sentSeg,
     sent_peak: sentPeak,
-    sent_trade: sentTrade,
     sent_total_yr1: sentTotalYr1,
     sent_total_yr2: sentTotalYr2,
     solar_total_annual: solarSavings + baseSeg,
@@ -207,9 +195,9 @@ function calcIrr(yr1: number, yr2: number, cost: number, inflationPct: number): 
   return ((lo + hi) / 2) * 100;
 }
 
-// Recovers the growth rate implied by OpenSolar's reported RoI so Sentinel's IRR is
+// Recovers the growth rate implied by the proposal's reported RoI so Sentinel's IRR is
 // computed like-for-like. Returns % or null when implausible (outside -3%…30%).
-function findOpenSolarGrowthRate(osRoiPct: number, yr1: number, cost: number): number | null {
+function findProposalGrowthRate(osRoiPct: number, yr1: number, cost: number): number | null {
   if (osRoiPct <= 0 || yr1 <= 0 || cost <= 0) return null;
 
   const targetIrr = osRoiPct / 100;
@@ -275,7 +263,7 @@ function buildMonthlyChart(
 ): ChartSeries {
   // c.mw is a solar irradiance curve (Jan 3.5% -> Jul 13.4%). It is the right shape for a
   // system whose benefit comes from generation, and the wrong one for a battery, whose
-  // peak-shaving and trading revenue does not collapse in December. Battery-only spreads
+  // peak-shaving revenue does not collapse in December. Battery-only spreads
   // the year evenly instead of drawing a summer hump the customer would never see.
   const weights =
     orderType === 'battery_only' ? new Array<number>(12).fill(1 / 12) : c.mw;
@@ -347,10 +335,10 @@ export function calculate(p: CalcInput, c: Constants): CalcResult {
     orderType
   );
 
-  // RoI (IRR) on the same growth basis as the customer's OpenSolar RoI.
+  // RoI (IRR) on the same growth basis as the RoI in the customer's proposal.
   const osRoi = p.os_roi ?? 0;
   const osGrowth =
-    osRoi > 0 ? findOpenSolarGrowthRate(osRoi, up.solar_total_annual, p.system_cost) : null;
+    osRoi > 0 ? findProposalGrowthRate(osRoi, up.solar_total_annual, p.system_cost) : null;
   const sentRoiGrowth = osGrowth ?? p.inflation;
   const sentRoiIrr = calcIrr(up.sent_total_yr1, up.sent_total_yr2, p.system_cost, sentRoiGrowth);
 
@@ -369,7 +357,6 @@ export function calculate(p: CalcInput, c: Constants): CalcResult {
     sentinel_bill: phpRound(up.sent_bill),
     sentinel_seg: phpRound(up.sent_seg),
     sentinel_peak: phpRound(up.sent_peak),
-    sentinel_trade: phpRound(up.sent_trade),
     sentinel_total_yr1: phpRound(up.sent_total_yr1),
     sentinel_payback: phpRound(sentPb, 2),
     sentinel_25yr: phpRound(sent25),

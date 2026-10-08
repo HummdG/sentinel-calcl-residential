@@ -7,12 +7,16 @@ define('ABSPATH', __DIR__);
 require __DIR__ . '/../../includes/class-calculator.php';
 
 // Default constants, mirroring Sentinel_Settings_Page::get_constants() defaults
-// (pence values already converted to pounds).
+// (pence values already converted to pounds), EXCEPT for the residential divergence
+// in web/lib/calculator.ts: no market trading and no fees. The PHP also hard-codes a 10%
+// non-additivity discount on AI Optimisation that the web app drops; scaling the
+// peak-shaving rate by 1/0.9 cancels it, so the PHP's sent_peak equals the web app's
+// gross 47 x battery x usage factor and every downstream figure is still checked.
 $constants = [
-    'peak_shaving_per_kwh'  => 47.0,
-    'trading_per_kwh'       => 13.0,
-    'iep_fee'               => 0.20,
-    'sentinel_fee'          => 0.20,
+    'peak_shaving_per_kwh'  => 47.0 / 0.9,
+    'trading_per_kwh'       => 0.0,
+    'iep_fee'               => 0.0,
+    'sentinel_fee'          => 0.0,
     'sub'                   => 199.0,
     'export_base_standard'  => 0.055,
     'export_sentinel_flux'  => 0.22,
@@ -48,7 +52,9 @@ $cases = [
 
 $out = [];
 foreach ($cases as $name => $input) {
-    $out[$name] = ['input' => $input, 'result' => $calc->calculate($input)];
+    $result = $calc->calculate($input);
+    unset($result['sentinel_trade']); // always 0 here; the web app no longer reports it
+    $out[$name] = ['input' => $input, 'result' => $result];
 }
 
 echo json_encode($out, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);

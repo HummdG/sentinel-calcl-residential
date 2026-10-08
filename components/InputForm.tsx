@@ -139,13 +139,13 @@ export default function InputForm({
       <span className="badge">Sentinel EMS™</span>
       <h1>Sentinel Savings Calculator</h1>
       <p className="sub">
-        Upload the OpenSolar PDF to auto-populate, or enter figures manually. All fields can be
+        Upload the customer&apos;s proposal PDF to auto-populate, or enter figures manually. All fields can be
         adjusted at any time.
       </p>
 
       {/* PDF UPLOAD */}
       <p className="slabel">
-        Auto-populate from OpenSolar report{' '}
+        Auto-populate from proposal{' '}
         <span style={{ ...italic, color: 'var(--hs-muted)' }}>
           optional, all fields editable manually
         </span>
@@ -224,11 +224,11 @@ export default function InputForm({
 
       <hr />
 
-      {/* SECTION B: OPENSOLAR FIGURES */}
+      {/* SECTION B: PROPOSAL FIGURES */}
       <p className="slabel">
         {batteryOnly ? 'Battery figures' : 'Solar & battery figures'}{' '}
         <span style={{ ...italic, color: 'rgba(245,158,11,0.8)' }}>
-          {batteryOnly ? 'enter directly from the quote' : 'enter directly from OpenSolar report'}
+          {batteryOnly ? 'enter directly from the quote' : 'enter directly from the proposal'}
         </span>
       </p>
       <div className="igrid t3">
@@ -289,7 +289,7 @@ export default function InputForm({
         <p className="rate-panel-title">Smart / Flux tariff</p>
         <p style={{ fontSize: 13, color: 'var(--hs-muted)' }}>
           Dynamic pricing is handled automatically by Sentinel&apos;s optimisation engine. No manual
-          rates required. Sentinel will trade at the best available times.
+          rates required. Sentinel will charge and export at the best available times.
         </p>
       </div>
 

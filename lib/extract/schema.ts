@@ -48,7 +48,15 @@ export interface Claim<T> {
 }
 
 export type ExtractionClaims = Record<NumericField, Claim<number>> &
-  Record<TextField, Claim<string>>;
+  Record<TextField, Claim<string>> & {
+    /**
+     * The twelve monthly export figures behind export_kwh, as read off the table. The
+     * model transcribes; verify.ts grounds each figure and does the addition, because a
+     * model summing twelve four-digit numbers in its head is wrong often enough to matter
+     * (Murray Road: 5,418 returned for a true 5,809). Empty when there is no such table.
+     */
+    export_monthly?: number[];
+  };
 
 // Structured outputs cap a schema at 16 union-typed parameters, because each one
 // multiplies compilation cost. Making all three properties of all 14 fields nullable
@@ -99,7 +107,8 @@ const FIELD_DESCRIPTIONS: Record<FieldName, string> = {
   system_cost: 'One-off total upfront cash price to buy the system outright, GBP.',
   solar_savings: 'Year-one annual bill saving, GBP.',
   export_kwh: 'Total annual electricity exported to the grid, kWh.',
-  export_pct: 'Percentage of generation exported to the grid, as a plain number.',
+  export_pct:
+    'Export to grid as a percentage of generation, as a plain number. Can exceed 100 on a battery system ("327% Export to grid" is 327).',
   os_payback: 'Simple payback period in decimal years (not discounted payback).',
   os_25yr: 'Estimated NET savings over system lifetime, after system cost, GBP.',
   os_roi: 'Return on investment as a plain percentage number (11.9, not 0.119).',
@@ -120,13 +129,20 @@ export function extractionSchema() {
   const properties: Record<string, unknown> = {};
   for (const f of TEXT_FIELDS) properties[f] = claimSchema('string', FIELD_DESCRIPTIONS[f]);
   for (const f of NUMERIC_FIELDS) properties[f] = claimSchema('number', FIELD_DESCRIPTIONS[f]);
+  // A plain array, not a nullable union, so it does not spend one of the 16 union slots.
+  properties.export_monthly = {
+    type: 'array',
+    items: { type: 'number' },
+    description:
+      'The twelve monthly "exported to grid" figures, January to December, copied exactly from the monthly table. Empty array if the document has no such table.',
+  };
 
   return {
     type: 'json_schema' as const,
     schema: {
       type: 'object' as const,
       properties,
-      required: [...ALL_FIELDS],
+      required: [...ALL_FIELDS, 'export_monthly'],
       additionalProperties: false,
     },
   };

@@ -53,13 +53,12 @@ export interface CalcResult {
   sentinel_bill: number;
   sentinel_seg: number;
   sentinel_peak: number;
-  sentinel_trade: number;
   sentinel_total_yr1: number;
   sentinel_payback: number;
   sentinel_25yr: number;
 
   roi_annualised_pct: number;
-  // The customer's own OpenSolar RoI, echoed back so the report renders every cell from
+  // The customer's own proposal RoI, echoed back so the report renders every cell from
   // one calculation snapshot instead of reading this one out of the live form.
   solar_roi: number;
 

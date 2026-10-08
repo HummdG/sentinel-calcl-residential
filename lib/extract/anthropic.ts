@@ -121,6 +121,10 @@ function toClaims(parsed: Record<string, unknown>): ExtractionClaims {
   const out = {} as ExtractionClaims;
   for (const f of TEXT_FIELDS) out[f] = toClaim<string>(parsed[f], 'string');
   for (const f of NUMERIC_FIELDS) out[f] = toClaim<number>(parsed[f], 'number');
+  const monthly = parsed.export_monthly;
+  out.export_monthly = Array.isArray(monthly)
+    ? monthly.filter((n): n is number => typeof n === 'number' && Number.isFinite(n))
+    : [];
   return out;
 }
 

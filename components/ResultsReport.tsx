@@ -168,7 +168,7 @@ export default function ResultsReport({ result: d, customerName, customerAddress
         <div className="card">
           <div className="chead">
             <span className="chtitle">{baselineLabel}</span>
-            <span className="ostag">OpenSolar figures</span>
+            <span className="ostag">Proposal figures</span>
           </div>
           <div className="cbody">
             <div className="mrow">
@@ -181,10 +181,6 @@ export default function ResultsReport({ result: d, customerName, customerAddress
             </div>
             <div className="mrow">
               <span className="mlbl">AI Optimisation</span>
-              <span className="mval dim">N/A</span>
-            </div>
-            <div className="mrow">
-              <span className="mlbl">Market trading revenue</span>
               <span className="mval dim">N/A</span>
             </div>
             <div className="mrow mrow-total">
@@ -222,10 +218,6 @@ export default function ResultsReport({ result: d, customerName, customerAddress
             <div className="mrow">
               <span className="mlbl">AI Optimisation</span>
               <span className="mval g">{sf(d.sentinel_peak)}</span>
-            </div>
-            <div className="mrow">
-              <span className="mlbl">Market trading revenue (net)</span>
-              <span className="mval g">{sf(d.sentinel_trade)}</span>
             </div>
             <div className="mrow mrow-total">
               <span className="mlbl">Total annual benefit</span>
@@ -281,12 +273,9 @@ export default function ResultsReport({ result: d, customerName, customerAddress
       <p className="disc">
         {batteryOnly
           ? 'Battery-only figures sourced directly from the customer’s quote. Sentinel uplift figures are estimates based on battery capacity, usage pattern, tariff type, and Intelligent Energy Partner residential scenario benchmarks (March 2026).'
-          : 'Solar + Battery figures sourced directly from OpenSolar report. Sentinel uplift figures are estimates based on system size, battery capacity, usage pattern, tariff type, and Intelligent Energy Partner residential scenario benchmarks (March 2026).'}{' '} Trading revenues are not
-        guaranteed. Sentinel market revenues shown net of 20% Intelligent Energy Partner trading fee
-        and 20% Sentinel optimisation fee. AI Optimisation and market trading revenue are not fully
-        additive as they share the same battery cycles; a 10% non-additivity adjustment is applied to
-        their combined total. Sentinel bill savings are capped only where the OpenSolar baseline
-        figure exceeds the customer&apos;s estimated total electricity spend, to prevent overstating
+          : 'Solar + Battery figures sourced directly from the customer’s proposal. Sentinel uplift figures are estimates based on system size, battery capacity, usage pattern, tariff type, and Intelligent Energy Partner residential scenario benchmarks (March 2026).'}{' '}
+        AI Optimisation savings are estimates and are not guaranteed. Sentinel bill savings are
+        capped only where the proposal&apos;s baseline figure exceeds the customer&apos;s estimated total electricity spend, to prevent overstating
         savings on anomalous system configurations.{' '}
         {batteryOnly
           ? 'This system has no solar generation, so a grid charging cost of 7p/kWh is deducted from the optimised export income on every exported kWh where a Flux tariff is selected, reflecting the net cost of grid-charged battery arbitrage cycles.'

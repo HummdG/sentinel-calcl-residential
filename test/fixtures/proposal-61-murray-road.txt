@@ -1,0 +1,996 @@
+=== PAGE 1 ===
+Prepared by: Oliver Burnett
+07850 697435
+oliver.burnett@hsenergy.co.uk
+For: Nassar Khalil
+61 Murray Road, Richmond, TW10
+Quote Ref: 8997154
+Issue Date: 1st October 2026
+Valid for 30 days from date of issue
+Solar / Battery System Feasibility Proposal
+Dear Nassar,
+Thank you allowing us the opportunity to present your solar / battery system feasibility proposal. I'm sure you will nd the proposal
+informative and useful in making your decision. We are available via telephone or email should you wish to discuss any details of the
+proposal.
+We are a local company covering the South
+We have been in the Solar PV industry for over 10 years
+All our engineers are employed solely by us
+We have installed more than 10,000 systems to date
+We are MCS, NICEIC, and ISO9001 & ISO14001 certied
+Your deposit is fully protected with HIES
+HSEnergy Residential specialise in creating and offering a number of bespoke renewable energy systems that are able to deliver
+signicant savings whilst reducing the carbon footprint of your property. The team are proud to be supplying quality, ethical products
+that are both environmentally and customer friendly. The knowledge and expertise of our experienced team allows us to work with our
+customers to nd the most suitable solutions, fully explained without jargon.
+Should you wish to proceed with this proposal and take it to the next stage you will need to click the 'Review Contract & Quotation'
+button.
+THIS QUOTATION IS VALID FOR 30 DAYS
+HSEnergy Residential
+Lynnem House, 1 Victoria Way
+Burgess Hill West Sussex RH15 9NF
+Phone: 01444 708252
+Email: info@hsenergy.co.uk
+Web: https://hsenergy.co.uk/residential
+Scan QR code on your phone
+to access the online proposal.
+Tap here to view
+your proposal
+online
+
+=== PAGE 2 ===
+Established in 2015, HSEnergy has been at the forefront of the renewable energy revolution, pioneering
+sustainable solutions for homes and businesses across the nation. With a decade of experience, we’ve
+proudly completed more than 10,000 solar system installations, empowering our customers to embrace
+clean energy and reduce their environmental footprint.
+At HSEnergy, we’re driven by a commitment to excellence and customer satisfaction. That’s why we go
+above and beyond to ensure that every installation is completed to the highest standards, using top-of-
+the-line products with the longest and best warranties in the industry. We believe in providing our
+customers with not only energy-ecient solutions but also peace of mind, knowing that they’re getting
+the best value for their investment in their homes and businesses.
+Our dedication to quality, innovation, and sustainability sets us apart in the industry, and our passionate
+team is always striving to exceed expectations and lead the way towards a brighter, greener future. Learn
+more about our journey, values, and the people behind our success as we continue to drive positive
+change through renewable energy solutions.
+Part of the HSEnergy Group of Companies
+HSEnergy Group is a leading provider of renewable energy solutions, encompassing Commercial, Residential, Education, Electrical
+Services, Sentinel (Monitoring, Optimisation and Protection Service), and Smart4Solar (Wholesale and Distribution), to deliver
+innovative energy systems and services across all sectors.
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 2 / 16
+
+=== PAGE 3 ===
+Recommended System Option
+2.3 kWp
+System Size
+9.4 %
+Rate of Return on
+Investment
+£25,270
+Estimated net savings
+over system lifetime
+£15,417
+Total System Price
+Map data and image © Google
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 3 / 16
+
+=== PAGE 4 ===
+Your Solution
+Solar Panels
+REA Power
+2.300 kW Total Module Power
+5 x 460 Watt Panels (REA-HDN96R-DSN-460)
+1,777 kWh per year
+FoxESS H1 SERIES (G2)
+Hybrid Inverter
+6 kW of Inverter Power
+Fox ESS
+1 x H1-6.0-E-G2
+10 Years Warranty
+FoxESS EQ Series
+23.3kWh of Battery Storage
+Fox ESS
+5 x FE-HV-EQS-4800
+10 Years Warranty
+FoxESS EQ Series
+4.66kWh of Battery Storage
+Fox ESS
+1 x FE-HV-EQM-4800
+10 Years Warranty
+IMO Stag AC Isolator 4 Pole, 63 Amp
+IMO Stag AC Isolator 4 Pole, 63 Amp
+1 x IMO-IS4P63
+HSE SPD - Surge Protection Device
+In accordance with BS 7671 443.4.1 regulation, it is advisable to
+install a surge protection device on your property to enhance
+electrical safety and safeguard against transient over-voltages. A
+surge protection device serves as a safeguard for electronic
+equipment by mitigating the impact of sudden, intense surges in
+electrical power. These surges, often caused by lightning strikes or
+uctuations in the power grid, can potentially damage connected
+devices. This device, which may incur an additional surcharge, can be
+implemented at the homeowner's discretion. In light of this
+information, I, the customer, request the installation of the surge
+protection device.
+1 x HSE SPD - Surge Protection Device
+HSE Sentinel Offer - 12 Months Free
+Sentinel - 12 months free monitoring; when purchased with a new
+solar or solar and battery system* (*for EcoFlow/Fox/Solis/Sofar
+customers only) - https://hsenergy.co.uk/residential/sentinel-remote-
+monitoring/
+1 x HSE Sentinel Offer - 12 Months Free
+HSE 10 Year Workmanship Warranty
+HSE 10 Year Workmanship Warranty - 10 Year Insurance Backed
+Workmanship Warranty
+1 x HSE 10 Year Workmanship Warranty
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 4 / 16
+
+=== PAGE 5 ===
+System Performance
+23%
+Energy From Solar
+99%
+Self Consumption
+327%
+Export to grid
+System Performance Assumptions: System Total losses: 0%, Inverter losses: 0%, Optimizer losses: 0%, Shading losses: 8.6%, Performance Adjustment: 0%, Output
+Calculator: MCS. Panel Orientations: 5 panels with Azimuth 250 and Slope 40.
+The performance of solar PV systems is impossible to predict with certainty due to the variability in the amount of solar radiation (sunlight) from location to location and
+from year to year. This estimate is based upon the standard MCS procedure is given as guidance only. It should not be considered as a guarantee of performance.
+The solar PV self-consumption has been calculated in accordance with the most relevant methodology for your system. There are a number of external factors that can
+have a signicant effect on the amount of energy that will be self-consumed.
+Shading will be present on your system that will reduce its output to the factor stated. This factor was NOT calculated using the MCS shading methodology, but we can
+conrm that the system as quoted, taking into account the shading present, will deliver at least 90% of the energy (in kWh) as set out in this performance estimate.
+This system performance calculation has been undertaken using estimated values for array orientation, inclination, or shading. Actual performance may be signicantly
+lower or higher if the characteristics of the installed system vary from the estimated values.
+Important Note: The energy performance and benets of EESS is impossible to predict with certainty due to the numerous functions a system can be programmed to
+perform. This estimate is based upon the standard MCS procedure and is given as guidance only. It should not be considered as a guarantee of performance.
+[EESS capacity not used for self consumption] Storage capacity of the battery - assumed usable capacity of battery [Total energy discharged per annum] Assumed usable
+capacity of battery x 730 [Additional self consumption] Estimated annual output (Section B) x self consumption rate with battery as a % (no higher than 95%) - Expected
+solar PV self-consumption (with EESS) (Section D)
+A. Installation data
+Installed capacity of PV system - kWp (stc) 2.300 kWp
+Orientation of the PV system - degrees from South Group 1: 5 panels with Orientation: 70 ° °
+Inclination of system - degrees from horizontal Group 1: 5 panels with Tilt: 40° °
+Postcode region 1
+New System Generation
+(kWh/day)
+Consumption
+(kWh/day)
+0
+5
+10
+15
+20
+25
+30
+1.7 3 4.2 5.6
+7.6 8.5 8.3 7.1 5.3 3.4 2.2 1.6
+Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+0
+5
+10
+15
+20
+25
+30
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 5 / 16
+
+=== PAGE 6 ===
+B. Performance calculations
+kWh/kWp (Kk) from table Group 1: 845 kWh/kWp
+Shade Factor (SF) 0.914
+Estimated annual output (kWp x Kk x SF) 1,777 kWh
+C. Estimated PV self-consumption - PV Only
+Assumed occupancy archetype In Half Day
+Assumed annual electricity consumption, kWh 7,700 kWh
+Assumed annual electricity generation from solar PV
+system, kWh 1,777 kWh
+Expected solar PV self-consumption (PV Only) 1,590 kWh
+Grid electricity independence / Self-suciency (PV
+Only) 20.6 %
+D. Estimated PV self-consumption - with EESS
+Assumed usable capacity of electricity energy storage
+device, which is used for self-consumption, kWh 25.16 kWh
+Expected solar PV self-consumption (with EESS) 1,762 kWh
+Grid electricity independence / Self-suciency (with
+EESS) 23.0 %
+E. Additional benets from PV and EESS
+EESS capacity not used for self-consumption 2.80 kWh
+Total energy discharged per annum 18,370 kWh
+Additional self-consumption for EV, heat pumps,
+diverters (only when present) 0.00 kWh
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 6 / 16
+
+=== PAGE 7 ===
+Environmental Benets
+Solar has no emissions. It just silently generates pure, clean energy.
+Each Year
+23%
+Consumption Offset
+0.4tons
+of CO₂ reduced per year
+(all energy)
+Over System Lifetime
+13,552km
+Car distance avoided
+(lifetime, all energy)
+87
+Trees planted (all
+energy)
+10
+Long haul ights
+avoided (all energy)
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 7 / 16
+
+=== PAGE 8 ===
+How your system works
+Daily Energy Flows
+CONSUMPTION (kWh) GENERATION (kWh) BATTERY (kWh) NET CONSUMPTION (kWh) EXPORT TO GRID (kWh)
+Winter Weekday
+4am 8am 12pm 4pm 8pm
+-10
+-5
+0
+5
+Winter Weekend
+4am 8am 12pm 4pm 8pm
+-10
+-5
+0
+5
+Summer Weekday
+4am 8am 12pm 4pm 8pm
+-10
+-5
+0
+5
+Summer Weekend
+4am 8am 12pm 4pm 8pm
+-10
+-5
+0
+5
+Generating Excess Solar
+HOME
+BATTERY
+SOLAR GRID
+Partially Offset Usage
+HOME
+BATTERY
+SOLAR GRID
+Night
+HOME
+BATTERY
+SOLAR GRID
+↑ Generation (kW)
+↓ Consumption (kW)
+↑ Generation (kW)
+↓ Consumption (kW)
+↑ Generation (kW)
+↓ Consumption (kW)
+↑ Generation (kW)
+↓ Consumption (kW)
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 8 / 16
+
+=== PAGE 9 ===
+Electricity Bill Savings
+First Year Monthly Bill Savings
+Old Bill
+New Bill
+£0
+£50
+£100
+£150
+£200
+£250
+£300
+Cumulative Bill Savings
+Lifetime Bill Savings £40,688
+1 7 13 19 25
+£0
+£10,000
+£20,000
+£30,000
+£40,000
+Usage Savings Smart Export Guarantee
+Month
+Solar
+Generation
+(kWh)
+Net Grid
+Consumption
+before new
+system (kWh)
+Electricity
+Imported
+after new
+system (kWh)
+Electricity
+Exported
+after new
+system (kWh)
+Export
+Credit
+(£)
+Utility Bill
+before new
+system (£)
+Utility Bill
+after new
+system (£)
+Estimated
+Savings
+(£)
+Jan 53 769 1,115 362 104 248 137 111
+Feb 83 751 1,034 332 95 241 130 111
+Mar 130 746 1,083 429 123 241 106 135
+Apr 168 635 985 482 138 207 64 143
+May 236 565 980 612 175 187 24 163
+Jun 254 537 936 615 176 178 13 164
+Jul 257 520 953 650 186 173 6 167
+Aug 219 510 956 626 179 170 14 156
+Sep 158 560 954 516 147 185 47 138
+Oct 105 625 1,005 447 128 205 77 127
+Nov 65 713 1,064 380 109 230 120 111
+Dec 49 768 1,115 358 102 248 138 110
+Utility savings based on switch from HSE Standard Tariff to Octopus Flux London - Apr 26
+Your projected energy cost is calculated by considering a 5% increase in energy cost each year, due to trends in the raising cost of energy. This estimate is based on your
+selected preferences, current energy costs and the position and orientation of your roof to calculate the eciency of the system. Projections are based on estimated usage
+of 7700 kWh per year, assuming HSE Standard Tariff Electricity Tariff.
+Your electricity tariff rates may change as a result of installing the system. You should contact your electricity retailer for further information.
+Proposed Tariff Details - Octopus Energy Octopus Flux London - Apr 26
+Energy Charges
+Peak Import4pm-7pm\sMon-Sun £0.39 / kWh
+Standard Import5am-4pm\s&\s7pm-2am\sMon-Sun £0.28 / kWh
+Monthly Electricity Spend
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 9 / 16
+
+=== PAGE 10 ===
+Flux Import2am-5am\sMon-Sun £0.17 / kWh
+Smart Export Guarantee
+Peak Export4pm-7pm\sMon-Sun £0.29 / kWh
+Standard Export5am-4pm\s&\s7pm-2am\sMon-Sun £0.10 / kWh
+Flux Export2am-5am\sMon-Sun £0.05 / kWh
+Fixed Charges
+Standing Charge £0.46 / day
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 10 / 16
+
+=== PAGE 11 ===
+Net Financial Impact BACS
+£40,688
+Utility Bill Savings
+- £15,417
+Net System Cost
+= £25,270
+Estimated Net Savings
+Cumulative Savings
+Payback 9 years, 7 months
+Net Savings £25,270
+2026 2030 2035 2040 2045 2050
+£-30,000
+£-20,000
+£-10,000
+£0
+£10,000
+£20,000
+£30,000
+Annual Savings
+Initial Investment
+2026 2030 2035 2040 2045 2050
+£-20,000
+£-15,000
+£-10,000
+£-5,000
+£0
+£5,000
+£10,000
+£15,000
+£20,000
+£3,883
+Net Present Value
+15 Years
+11 Months
+Discounted Payback
+Period
+164%
+Total Return on
+Investment
+9.4%
+Rate of Return on
+Investment
+Year
+Electricity
+Consumption
+(kWh)
+Solar
+Generation
+(kWh)
+Utility Bill
+(before
+new
+system)
+(£)
+Utility Bill
+(after new
+system)
+(£)
+Annual
+Savings
+(from new
+system)
+(£)
+System Costs
+(Net of Dealer
+Incentives)
+(£)
+Customer
+Incentives
+(Upfront)
+(£)
+Net
+Savings
+(£)
+Cumulative
+Impacts
+(£)
+2026 7,700 1,777 2,511 875 1,635 15,417 0 (13781) (13781)
+2027 7,700 1,771 2,636 1,004 1,633 0 0 1632 (12149)
+2028 7,700 1,765 2,768 1,139 1,630 0 0 1629 (10519)
+2029 7,700 1,760 2,907 1,280 1,626 0 0 1626 (8893)
+2030 7,700 1,754 3,052 1,429 1,623 0 0 1623 (7270)
+2031 7,700 1,748 3,204 1,585 1,620 0 0 1619 (5650)
+2032 7,700 1,743 3,365 1,754 1,611 0 0 1610 (4039)
+2033 7,700 1,737 3,533 1,932 1,601 0 0 1601 (2438)
+2034 7,700 1,731 3,710 2,116 1,593 0 0 1593 (845)
+2035 7,700 1,726 3,895 2,307 1,588 0 0 1587 742
+2036 7,700 1,720 4,090 2,505 1,585 0 0 1585 2327
+2037 7,700 1,714 4,294 2,709 1,585 0 0 1585 3912
+2038 7,700 1,709 4,509 2,922 1,587 0 0 1587 5500
+2039 7,700 1,703 4,734 3,144 1,590 0 0 1590 7090
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 11 / 16
+
+=== PAGE 12 ===
+Year
+Electricity
+Consumption
+(kWh)
+Solar
+Generation
+(kWh)
+Utility Bill
+(before
+new
+system)
+(£)
+Utility Bill
+(after new
+system)
+(£)
+Annual
+Savings
+(from new
+system)
+(£)
+System Costs
+(Net of Dealer
+Incentives)
+(£)
+Customer
+Incentives
+(Upfront)
+(£)
+Net
+Savings
+(£)
+Cumulative
+Impacts
+(£)
+2040 7,700 1,697 4,971 3,376 1,595 0 0 1595 8685
+2041 7,700 1,691 5,220 3,617 1,603 0 0 1603 10288
+2042 7,700 1,686 5,481 3,866 1,614 0 0 1614 11903
+2043 7,700 1,680 5,755 4,123 1,631 0 0 1631 13534
+2044 7,700 1,674 6,042 4,459 1,584 0 0 1583 15118
+2045 7,700 1,669 6,345 4,843 1,502 0 0 1501 16619
+2046 7,700 1,663 6,662 5,089 1,573 0 0 1572 18192
+2047 7,700 1,657 6,995 5,347 1,648 0 0 1647 19840
+2048 7,700 1,652 7,345 5,618 1,726 0 0 1726 21566
+2049 7,700 1,646 7,712 5,903 1,809 0 0 1808 23375
+2050 7,700 1,640 8,097 6,203 1,895 0 0 1894 25270
+Estimates do not include replacement costs of equipment not covered by a warranty. Components may need replacement after their warranty period. Financial discount
+rate assumed: 6.75%
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 12 / 16
+
+=== PAGE 13 ===
+Quotation
+Notice to Act Application – Letter of Authority (LOA)
+FAO: Distribution Network Operator (DNO) / Independent Distribution Network Operator (IDNO)
+Re: DNO Grid Application (G98/G99/G100) – 61 Murray Road, Richmond, TW10
+I, Nassar Khalil, conrm that I am the legal and registered owner / occupier of the land situated at: 61 Murray Road, Richmond, TW10
+I would like to conrm that I have appointed HSEnergy Group Ltd, to develop a Solar PV System / Battery Energy Storage System on
+our land and hereby grant permission for them or any consultant that they may authorise to seek and apply for a grid connection on
+our land for the purpose of connecting this system to the local electricity distribution network
+Name: Nassar Khalil
+Date: 1st October 2026
+Signature: Nassar Khalil
+Project Specic Assumptions / Exclusions / Info
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 13 / 16
+
+=== PAGE 14 ===
+Payment Option: BACS
+5 x REA Power 460 Watt Panels (REA-HDN96R-DSN-460)
+1 x H1-6.0-E-G2 (Fox ESS)
+5 x FE-HV-EQS-4800, 1 x FE-HV-EQM-4800 (Fox ESS)
+1 x IMO-IS4P63, 1 x HSE SPD - Surge Protection Device, 1 x HSE Sentinel Offer - 12 Months Free, 1 x HSE 10 Year Workmanship
+Warranty
+Total System Price £15,417.32 Excluding £0.00 VAT
+Purchase Price £15,417.32 Including £0.00 VAT
+Finance Options
+Finance Options
+Looking to spread out the cost of your installation? Visit the OpenSolar Finance Marketplace to see nance options and apply for
+credit.
+Tap here to view your nance options online
+Scan to Pay
+Scan this QR code to pay your deposit.
+Tap here to pay your deposit online
+This proposal is valid until 4th March 2026.
+Payment Milestones
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 14 / 16
+
+=== PAGE 15 ===
+Deposit £1,541.73
+Remaining Balance - within 7 days of
+installation completion £13,875.59
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 15 / 16
+
+=== PAGE 16 ===
+System Component Warranty
+Warranties: 25 Year Panel Product Warranty, 30 Year Panel Performance Warranty – TBC (subject to manufacturer / model).
+Disclaimer – Energy Tariffs
+Information provided to you by HSEnergy regarding renewable energy electricity tariffs, including those associated with solar PV
+systems, is intended solely for informational purposes. We may highlight some popular tariffs currently available and this should not
+be considered nancial advice, a recommendation, or an endorsement of any specic tariff or provider.
+We encourage you to conduct your own research to determine the most suitable option for your needs and circumstances. Please note
+that tariff terms and conditions, as well as their availability, may vary and are subject to change by the providers.
+HSEnergy Group Ltd accepts no liability for decisions made based on the information it provides. Always read and understand the
+terms of any agreement before committing to a tariff or service.
+Disclaimer – Financing Options with Phoenix Financial Consultants Limited
+HSEnergy Group Ltd has partnered with Phoenix Financial Consultants Limited to provide our customers with access to potential
+nancing options to support the purchase of solar and battery systems. HSEnergy Group Ltd does not provide nancial advice, nor do
+we make any recommendations regarding specic nancial products or providers.
+Any nancing offer made to you will come directly from Phoenix Financial Consultants Limited, who are fully responsible for
+assessing your suitability, eligibility, and terms of any nance agreement. We encourage you to carefully review all terms and
+conditions and to seek independent nancial advice if you are unsure whether any nancing option is suitable for your individual
+circumstances.
+For further information about nancing options, you can visit: https://www.phoenix-fc.co.uk
+HSEnergy Group Ltd accepts no liability for any decisions you make in relation to nancing agreements, including those offered by
+Phoenix Financial Consultants Limited.
+Disclaimer – Product Images / Datasheets
+May be indicative and subject to variant, change or DNO approval.
+Applicable Taxes
+Pricing may be indicated as net - applicable taxes such as VAT may apply (usually commercial premises only).
+Terms & Conditions
+https://hsenergy.co.uk/residential-hies-compliant-terms-conditions
+This proposal has been prepared by HSEnergy Residential using tools from OpenSolar. Please visit www.opensolar.com/proposal-disclaimer for additional
+disclosures from OpenSolar.
+HSEnergy Residential - Oliver Burnett - oliver.burnett@hsenergy.co.uk - 07850 697435 Page 16 / 16
+
+=== PAGE 17 ===
+www.fox-ess.com
+For more information about the Fox ESS range, visit:
+Harness the power of the sun day and night with the
+ground-breaking range of Hybrid & AC inverter from
+Fox ESS. Full of advanced features and compatible
+with our very own range of high-voltage batteries,
+the hybrid range from Fox ESS.
+3kW 6kW
+H1(G2)/AC1(G2)
+D A T A S H E E T
+SINGLE-PHASE HYBRID/AC INVERTER
+EASY INSTALLATION
+Flexible configuration, plug and play
+set-up, built-in fuse protection.
+IP65 RATED
+Engineered to last with maximum
+flexibility. Suitable for outdoor installation.
+REMOTE MONITORING
+Monitor your system remotely via
+smartphone app or web portal.
+HIGH VOLTAGE
+Includes high-voltage batteries for
+maximum round-trip effciency.
+with FoxCloud V2.0
+Advanced System Monitoring
+REFINED - POWERFUL - FLEXIBLE
+up to
+6kW
+charge/
+discharge
+
+=== PAGE 18 ===
+MODEL
+INPUT PV (ONLY FOR HYBRID)
+Max. PV Array Power [Wp]
+Max. Input Power [W]
+Max. Input Voltage [V]
+Start-up Input Voltage [V]
+Rated Input Voltage [V]
+MPPT Operang Voltage Range [V]
+Max. Input Current [A]
+Max. Short-circuit Current [A]
+No. of Independent MPP Trackers
+No. of Strings per MPP Tracker
+Baery Type
+Baery Voltage [V]
+Max. Charge/Discharge Current [A]
+Communicaon Interface
+Max. AC Input Power [VA]
+Max. AC Input Current (per phase) [A]
+Rated Output Power [W]
+Max. Output Apparent Power [VA]
+Rated Output Current (per phase) [A]
+Rated Output Current (per phase) [A](For AUS)
+Max. Output Current [A]
+Rated Grid Voltage [V]
+Rated Grid Frequency [Hz]
+Power Factor
+THDi [%]
+AC INPUT AND OUTPUT (GRID)
+EPS OUTPUT (WITH BATTERY)
+Max. Output Apparent Power [VA]
+Rated Output Power [W]
+Peak Output Apparent Power (60s) [VA]
+Max. Current (per phase) [A]
+Rated Output Voltage [V]
+Rated Output Frequency [Hz]
+Power Factor
+THDv ( linear Load) [%]
+Parallel operaon [PCS]
+Switch me [ms]
+EFFICIENCY
+Euro Efficiency [%]
+Max. Efficiency [%]
+Max. Baery Charge Efficiency (PV to BAT) (@full load) [%]
+Max. Baery Discharge Efficiency (BAT to AC) (@full load) [%]
+PROTECTION
+Insulaon Monitoring
+Residual Current Monitoring
+DC Reverse Polarity Protecon
+An-islanding Protecon
+AC Short-circuit Protecon
+AC Overcurrent/Overvoltage Protecon
+DC Switch
+Baery Wake-up Funcon
+SPD
+AFCI
+STANDARD COMPLIANCE (MORE AVAILABLE UPON REQUEST)
+Safety
+Grid Regulaon
+* More technical characteriscs are avaliable on demand and customized.
+1. 3680 for G98.
+BATTERY CONNECTION
+GENERAL DATA
+AC1-5.0-E-G2
+H1-5.0-E-G2
+7500
+10000
+5500
+5000
+22.7
+21.7
+25.0
+45.5
+5000
+6000
+22.7
+96.30
+97.08
+AC1-6.0-E-G2
+H1-6.0-E-G2
+9000
+12000
+6600
+6000
+27.3
+54.5
+6000
+7200
+27.3
+96.33
+26.1
+30.0
+97.08
+AC1-3.0-E-G2
+H1-3.0-E-G2
+4500
+6000
+3300
+3000
+13.6
+27.3
+3000
+3600
+13.6
+95.26
+13.0
+15.0
+97.01
+AC1-3.7-E-G2
+H1-3.7-E-G2
+5500
+7680
+4048/36801
+3680
+16.7/16 1
+34.9
+3680
+4400
+16.7
+95.70
+16.0
+18.4
+97.08
+AC1-4.6-E-G2
+H1-4.6-E-G2
+6900
+9200
+5060
+4600
+20.9
+41.8
+4600
+5500
+20.9
+96.23
+2
+1
+20.0
+23.0
+20 / 20
+Lithium Baery (LFP)
+80 ~ 480
+40
+CAN(communicate with inverter, upgrade BMS)
+220/230/240
+50/60
+1 ( Adjustable from 0.8 leading to 0.8 lagging )
+<2 @rated power
+10
+<20
+97.04
+98.50
+97.00
+EN 62109-1, EN 62109-2
+G98, G99, EN50549, AS / NZS 4777.2
+220/230/240
+50/60
+1 ( Adjustable from 0.8 leading to 0.8 lagging )
+<3 @rated power
+600
+75
+360
+80 ~ 550
+16 / 16
+YES
+YES
+YES
+YES
+YES
+YES
+YES
+YES
+DC: Type II /AC: Type III
+YES
+434*418*185
+22
+Wall-Mounted
+Non-isolated
+Natural
+35
+2000
+-25 ~ 60
+0 ~ 100
+IP65
+15
+WiFi, LAN(Oponal) , 4G(Oponal)
+RS485, DRM, Ripple Control, USB, CAN
+LCD, App, Website
+Dimensions (W*H*D) [mm]
+Weight [kg]
+Installaon
+Topology
+Cooling Method
+Noise Emission [dB]
+Max. Operang Altude [m]
+Operang Temperature Range [°C ]
+Humidity (No Condensaon) [%]
+Ingress protecon
+Standby consumpon[W]
+Monitoring Module
+Communicaon
+Display
+TECHNICAL SPECIFICATIONS
+V1.1 | 2025/03/28
+6000 7400 9200 1200010000
+5000 60003000 3680 4600
+
+=== PAGE 19 ===
+WWW.FOX-ESS.COM
+D A T A S H E E T
+EQ4800-L2/L3/L4/L5/L6/L7/L8/L9
+• 4.66kWh capacity
+• Scalable to 41.94 kWh
+• 90% Depth of Discharge
+• Large temperature tolerance
+• Easy installation
+• CAN communication
+• High voltage
+The EQ is a high-performance, scalable
+battery storage system. The modular design allows
+for maximum flexibility, making it suitable for a
+broad range of storage applications.
+Additional batteries can be installed in series,
+allowing for a maximum storage capacity of 41.94 kWh.
+Installation is easy, with a plug and play
+solution that can save valuable time for installers.
+High
+Voltage
+Simple
+Installaon
+Expandable
+System
+90%
+DoD
+High
+Efficiency
+EQ SERIES
+HIGH VOLTAGE BATTERY
+FROM Fox ESS
+Fox ESS EQ
+BATTERY STORAGE SYSTEM
+
+=== PAGE 20 ===
+MODEL
+104
+30
+50
+65
+>95
+90
+≥6000
+CAN
+EQ4800-S: LED*1, EQ4800-M: LED*6
+Max. 9 Modules in Series
+LiFePO4
+Outdoor/ Indoor (Stand)
+-10 ~ 35
+Natural Convection
+5 ~ 95 (No Condensing)
+Max. 2,000
+IEC 62619
+EN IEC 61000-6-1/2/3/4
+UN38.3
+IP65
+Installation Location
+Operating Temperature [°C]
+Storage Temperature [°C]
+Cooling method
+Humidity [%]
+Altitude [m]
+OPERATING CONDITIONS
+ELECTRICAL CHARACTERISTICS
+MECHANICAL CHARACTERISTICS
+CERTIFICATES
+Dimensions (W*H*D) [mm]
+Weight [kg]
+Safety
+EMC
+Transportation
+Ingress Protection
+Protective class
+EQ4800-L2/L3/L4/L5/L6/L7/L8/L9
+*1, @25°C, @70% SOH, @90% DOD, 0.3C charging/discharging
+*2, The current is affected by temperature ,cell voltage and SOC.
+*3, Refer to FoxESS Battery Warranty Terms and Conditions.
+Charge: 0 ~ 55
+Discharge: -10 ~ 55
+Fox ESS
+Version 1.1 | 2023/12/13
+EQ SERIES
+Battery Type
+Battery Module
+Nominal Voltage [V]
+Nominal Energy [kWh]
+Usable Energy [kWh]*1
+Operating Voltage[V]
+Normal capacity [Ah]
+Recommend Charge/Discharge Current [A]
+Max.Charge/Discharge Current [A]*2
+Peak Discharge Current(60S) [A]
+Battery Pack Round-Trip Efficiency [%]*1
+Depth Of Discharge [%]
+Cycle Life*1
+Communication
+Display
+Scalability
+403.2
+41.93
+37.73
+365.4 ~ 463.7
+1*EQ4800-M
+8*EQ4800-S
+EQ4800
+-L9
+570*1352*380
+356.5
+1*EQ4800-M
+7*EQ4800-S
+EQ4800
+-L8
+570*1214*380
+317.5
+358.4
+37.27
+33.54
+324.8 ~ 412.2
+EQ4800
+-L7
+1*EQ4800-M
+6*EQ4800-S
+313.6
+32.61
+29.34
+284.2 ~ 360.6
+570*1076*380
+278.5
+EQ4800
+-L6
+1*EQ4800-M
+5*EQ4800-S
+268.8
+27.96
+25.16
+243.6 ~ 309.1
+570*938*380
+239.5
+EQ4800
+-L5
+1*EQ4800-M
+4*EQ4800-S
+224
+23.3
+20.97
+203.0 ~ 257.6
+570*800*380
+200.5
+EQ4800
+-L4
+1*EQ4800-M
+3*EQ4800-S
+179.2
+18.64
+16.77
+162.4 ~ 206.0
+570*662*380
+161.5
+1*EQ4800-M
+2*EQ4800-S
+EQ4800
+-L3
+134.4
+13.98
+12.58
+121.8 ~ 154.5
+570*524*380
+122.5
+1*EQ4800-M
+1*EQ4800-S
+EQ4800
+-L2
+89.6
+9.32
+8.38
+81.2 ~ 103.0
+570*386*380
+83.5
+10 *3
+WARRANTY
+Standard Warranty [year]*3

@@ -75,7 +75,7 @@ describe('Flux arbitrage on a system with no solar', () => {
 
 describe('monthly chart seasonality', () => {
   it('spreads a battery-only year evenly', () => {
-    // c.mw is an irradiance curve. A battery's peak-shaving and trading revenue does not
+    // c.mw is an irradiance curve. A battery's peak-shaving revenue does not
     // collapse in December, so drawing it with a summer hump would misrepresent the system.
     const r = calculate({ ...base, order_type: 'battery_only' }, c);
 

@@ -95,6 +95,15 @@ function findEvidence(
     }
   }
 
+  // A battery total summed from several equipment lines. Quote each line, joined by an
+  // ellipsis, which is how the model quotes a sum of separate spans.
+  if (field === 'battery_kwh') {
+    for (const [page, body] of pages) {
+      const lines = body.match(/[\d.]+\s*kWh of Battery Storage/g);
+      if (lines && lines.length > 1) return { page, quote: lines.join(' ... ') };
+    }
+  }
+
   // Computed values never appear verbatim. Quote the rows they were derived from.
   const anchor = field ? EVIDENCE_ANCHORS[field] : undefined;
   if (anchor) {
@@ -364,6 +373,82 @@ describe('arithmetic gates catch the real historical failures', () => {
     expect(result.provenance.find((p) => p.field === 'export_kwh')!.status).toBe('verified');
     expect(result.missing).not.toContain('export_kwh');
     expect(result.escalate).toBe(false);
+  });
+});
+
+describe('Murray Road: a large battery on Flux', () => {
+  const fx = () => fixtures.find((f) => f.slug.includes('murray-road'))!;
+
+  it('accepts a battery total summed from two lines and quoted with an ellipsis', () => {
+    // The model read 27.96 correctly (23.3 + 4.66) and quoted both lines joined by "...".
+    // Grounding used to look for that joined string as one span and rejected it.
+    const claims = perfectClaims(fx());
+    claims.battery_kwh = {
+      value: 27.96,
+      page: 4,
+      evidence: '23.3kWh of Battery Storage ... 4.66kWh of Battery Storage',
+    } as never;
+
+    const result = verifyExtraction(claims, fx().text);
+    expect(result.values.battery_kwh).toBe(27.96);
+    expect(result.provenance.find((p) => p.field === 'battery_kwh')!.status).toBe('verified');
+  });
+
+  it('still refutes an ellipsis quote when one fragment is invented', () => {
+    const claims = perfectClaims(fx());
+    claims.battery_kwh = {
+      value: 33.3,
+      page: 4,
+      evidence: '23.3kWh of Battery Storage ... 10kWh of Battery Storage',
+    } as never;
+
+    const result = verifyExtraction(claims, fx().text);
+    expect(result.values.battery_kwh).toBeNull();
+  });
+
+  it('keeps an export above generation when the stated percentage says so', () => {
+    // 5,809 kWh exported from 1,777 kWh generated, and the proposal prints "327% Export
+    // to grid". The battery exports grid-charged energy; it is not a misread column.
+    const result = verifyExtraction(perfectClaims(fx()), fx().text);
+
+    expect(result.values.export_kwh).toBe(5809);
+    expect(result.provenance.find((p) => p.field === 'export_kwh')!.status).toBe('verified');
+    expect(result.warnings.join(' ')).toMatch(/as the proposal states \(327%\)/);
+    expect(result.escalate).toBe(false);
+  });
+
+  it('sums the monthly export figures itself rather than trusting the model addition', () => {
+    // Haiku transcribed the column but returned 5,418 as its total. Each monthly figure is
+    // in the document, so their sum, 5,809, replaces it.
+    const claims = perfectClaims(fx());
+    claims.export_kwh = { ...claims.export_kwh, value: 5418 } as never;
+    claims.export_monthly = [362, 332, 429, 482, 612, 615, 650, 626, 516, 447, 380, 358];
+
+    const result = verifyExtraction(claims, fx().text);
+    expect(result.values.export_kwh).toBe(5809);
+    expect(result.provenance.find((p) => p.field === 'export_kwh')!.note).toMatch(
+      /model's own total was 5,418/
+    );
+  });
+
+  it('ignores monthly figures that are not in the document', () => {
+    const claims = perfectClaims(fx());
+    claims.export_monthly = [999, 332, 429, 482, 612, 615, 650, 626, 516, 447, 380, 358];
+
+    const result = verifyExtraction(claims, fx().text);
+    expect(result.values.export_kwh).toBe(5809); // the model's own (correct) total stands
+    expect(result.provenance.find((p) => p.field === 'export_kwh')!.note ?? '').not.toMatch(
+      /summed from the twelve/
+    );
+  });
+
+  it('still drops an export above generation that nothing corroborates', () => {
+    const claims = perfectClaims(fx());
+    claims.export_pct = { value: null, page: 0, evidence: '' } as never;
+
+    const result = verifyExtraction(claims, fx().text);
+    expect(result.values.export_kwh).toBeNull();
+    expect(result.escalate).toBe(true);
   });
 });
 
