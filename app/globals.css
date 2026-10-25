@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
-/* Page reset — outside WordPress we own the whole document. */
+/* Page reset. Outside WordPress we own the whole document. */
 html, body {
   margin: 0;
   padding: 0;
@@ -209,7 +209,10 @@ body { min-height: 100vh; }
 
 /* TARIFF TOGGLES */
 #sentinel-root .tgrid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 0; }
-@media(max-width:580px) { #sentinel-root .tgrid { grid-template-columns: 1fr; } }
+/* Order type has two options, not three; without this they sit in a 3-column grid with
+   a dead third cell. Same modifier convention as .igrid.t3 / .igrid.t4 above. */
+#sentinel-root .tgrid.t2 { grid-template-columns: repeat(2,1fr); }
+@media(max-width:580px) { #sentinel-root .tgrid, #sentinel-root .tgrid.t2 { grid-template-columns: 1fr; } }
 #sentinel-root .toption { position: relative; cursor: pointer; }
 #sentinel-root .toption input { position: absolute; opacity: 0; width: 0; height: 0; }
 #sentinel-root .tlabel {
@@ -586,7 +589,7 @@ body { min-height: 100vh; }
    looks ordinary is how a stale value passes for an extracted one. */
 #sentinel-root .field.pdf-missing { border-color: #ef4444; background: rgba(239,68,68,0.06); }
 #sentinel-root .field.pdf-missing::after {
-  content: 'Not found in the proposal — enter this manually';
+  content: 'Not found in the proposal. Enter this manually';
   display: block;
   margin-top: 6px;
   font-size: 11px;
@@ -662,21 +665,6 @@ body { min-height: 100vh; }
 #sentinel-root .li { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--hs-muted); }
 #sentinel-root .ld { width: 10px; height: 10px; border-radius: 2px; }
 
-/* NOTE */
-#sentinel-root .note {
-  background: rgba(245,158,11,.08);
-  border: 1px solid rgba(245,158,11,.2);
-  border-radius: var(--radius-sm);
-  padding: 14px 16px;
-  margin-bottom: 20px;
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-#sentinel-root .ni { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-#sentinel-root .nt { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
-#sentinel-root .nt strong { color: var(--hs-amber); }
-
 /* FLUX ARBITRAGE WARNING */
 #sentinel-root .arbitrage-warn {
   display: none;
@@ -692,3 +680,74 @@ body { min-height: 100vh; }
 #sentinel-root .arbitrage-warn.on { display: block; }
 #sentinel-root .arbitrage-warn strong { color: #fbbf24; }
 #sentinel-root .disc { font-size: 11px; color: #475569; line-height: 1.6; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--hs-border); }
+
+/* --- Provenance panel -------------------------------------------------------------
+   Lets the surveyor audit every extracted figure against its source before calculating,
+   without opening the PDF alongside. Rejected values stay visible with their reason: a
+   blank box says nothing, whereas "quoted text not found in the document" says the model
+   invented it and the figure should be typed by hand. */
+#sentinel-root .provenance { margin: 10px 0 4px; }
+#sentinel-root .provenance-toggle {
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--hs-green);
+  cursor: pointer;
+}
+#sentinel-root .provenance-toggle:hover { text-decoration: underline; }
+#sentinel-root .provenance-count { margin-left: 8px; font-weight: 500; opacity: 0.7; }
+#sentinel-root .provenance-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 11.5px;
+  table-layout: fixed;
+}
+#sentinel-root .provenance-table th,
+#sentinel-root .provenance-table td {
+  border-top: 1px solid rgba(0,0,0,0.08);
+  padding: 5px 6px;
+  text-align: left;
+  vertical-align: top;
+  word-break: break-word;
+}
+#sentinel-root .provenance-table thead th {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.65;
+  border-top: 0;
+}
+/* Column widths come from <colgroup>. Setting them on `td:nth-child(n)` does
+   nothing under `table-layout: fixed`, which measures the first row only.
+   Source text gets the majority: it is the column that actually gets read. */
+#sentinel-root .provenance-table .prov-col-field { width: 22%; }
+#sentinel-root .provenance-table .prov-col-value { width: 17%; }
+/* Wide enough for the letter-spaced "PAGE" header to stay on one line. Narrower
+   and the label breaks to "PAG / E"; the digits themselves need far less. */
+#sentinel-root .provenance-table .prov-col-page { width: 42px; }
+#sentinel-root .provenance-table .prov-col-source { width: auto; }
+
+/* The page number locates the quote beside it, so it is set as a reference
+   marker rather than a data value: right-aligned for clean digits, but with
+   almost no padding after it so it sits against the text it points at instead
+   of stranding itself mid-table. Header shares the alignment, or the label
+   drifts away from the digits underneath it. */
+#sentinel-root .provenance-table th:nth-child(3),
+#sentinel-root .provenance-table td:nth-child(3) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  padding-right: 2px;
+  white-space: nowrap;
+  opacity: 0.55;
+}
+#sentinel-root .provenance-table q { opacity: 0.8; font-style: italic; }
+#sentinel-root .prov-status { font-size: 10px; opacity: 0.6; white-space: nowrap; }
+#sentinel-root .prov-none { opacity: 0.4; }
+#sentinel-root .prov-note { margin-top: 3px; font-size: 10.5px; opacity: 0.75; }
+#sentinel-root tr.prov-verified th { color: var(--hs-green); }
+#sentinel-root tr.prov-unverified { background: rgba(239,68,68,0.05); }
+#sentinel-root tr.prov-unverified th { color: #b91c1c; }
+#sentinel-root tr.prov-absent th { opacity: 0.6; }

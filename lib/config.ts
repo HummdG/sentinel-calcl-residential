@@ -2,7 +2,7 @@
 //
 // Mirrors admin/class-settings-page.php::raw_defaults() from the WordPress plugin.
 // Every business constant has a default in code, overridable by a SENTINEL_* env
-// var. Secrets (Groq key, SMTP credentials) have no defaults. Because all
+// var. Secrets (Anthropic key, SMTP credentials) have no defaults. Because all
 // calculations run in server route handlers, none of this is ever shipped to the
 // browser.
 
@@ -22,14 +22,10 @@ function envInt(value: string | undefined, fallback: number): number {
 
 export interface Constants {
   peak_shaving_per_kwh: number;
-  trading_per_kwh: number;
-  iep_fee: number;
-  sentinel_fee: number;
   sub: number;
   export_base_standard: number; // £/kWh
   export_sentinel_flux: number; // £/kWh
   flux_charge_rate: number; // £/kWh
-  tm: Record<Tariff, number>;
   um: Record<Usage, number>;
   bill_up: Record<Tariff, number>;
   mw: number[];
@@ -52,18 +48,10 @@ export function getConstants(): Constants {
 
   return {
     peak_shaving_per_kwh: envNum(process.env.SENTINEL_PEAK_SHAVING_PER_KWH, 47.0),
-    trading_per_kwh: envNum(process.env.SENTINEL_TRADING_PER_KWH, 13.0),
-    iep_fee: envNum(process.env.SENTINEL_IEP_FEE, 0.2),
-    sentinel_fee: envNum(process.env.SENTINEL_SENTINEL_FEE, 0.2),
     sub: envNum(process.env.SENTINEL_SUB, 199.0),
     export_base_standard: envNum(process.env.SENTINEL_EXPORT_BASE_STANDARD, 0.055),
     export_sentinel_flux: envNum(process.env.SENTINEL_EXPORT_SENTINEL_FLUX, 0.22),
     flux_charge_rate: envNum(process.env.SENTINEL_FLUX_CHARGE_RATE, 0.07),
-    tm: {
-      standard: envNum(process.env.SENTINEL_TM_STANDARD, 1.0),
-      daynight: envNum(process.env.SENTINEL_TM_DAYNIGHT, 1.2),
-      flux: envNum(process.env.SENTINEL_TM_FLUX, 1.4),
-    },
     um: {
       daytime: envNum(process.env.SENTINEL_UM_DAYTIME, 0.75),
       balanced: envNum(process.env.SENTINEL_UM_BALANCED, 1.0),
@@ -78,17 +66,32 @@ export function getConstants(): Constants {
   };
 }
 
-export interface GroqConfig {
+export interface ExtractionConfig {
   apiKey: string;
-  model: string;
+  /** Tier 1: cheap, runs on every upload. */
+  primaryModel: string;
+  /** Tier 2: stronger, with page images; runs only when verification fails. */
+  escalationModel: string;
+  /** Character cap on the document text sent to the model. */
   maxChars: number;
+  /**
+   * Shared secret required by the extraction routes. Each call spends real credit, so an
+   * open endpoint is a standing cost-abuse risk. Blank disables the check. Acceptable
+   * for local development only.
+   */
+  sharedSecret: string;
+  /** Extractions allowed per IP per hour. */
+  rateLimitPerHour: number;
 }
 
-export function getGroqConfig(): GroqConfig {
+export function getExtractionConfig(): ExtractionConfig {
   return {
-    apiKey: process.env.GROQ_API_KEY ?? '',
-    model: process.env.GROQ_MODEL?.trim() || 'llama-3.3-70b-versatile',
-    maxChars: envInt(process.env.GROQ_MAX_CHARS, 120000),
+    apiKey: process.env.ANTHROPIC_API_KEY ?? '',
+    primaryModel: process.env.EXTRACT_MODEL_PRIMARY?.trim() || 'claude-haiku-4-5',
+    escalationModel: process.env.EXTRACT_MODEL_ESCALATION?.trim() || 'claude-opus-5',
+    maxChars: envInt(process.env.EXTRACT_MAX_CHARS, 200000),
+    sharedSecret: process.env.EXTRACT_SHARED_SECRET ?? '',
+    rateLimitPerHour: envInt(process.env.EXTRACT_RATE_LIMIT_PER_HOUR, 60),
   };
 }
 

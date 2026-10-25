@@ -5,7 +5,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Sentinel Savings Calculator',
   description:
-    'Sentinel EMS financial impact calculator — the added benefit of energy management on top of a solar + battery system.',
+    'Sentinel EMS financial impact calculator: the added benefit of energy management on top of a solar + battery system.',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

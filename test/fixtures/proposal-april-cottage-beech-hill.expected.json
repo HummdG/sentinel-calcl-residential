@@ -1,0 +1,35 @@
+{
+  "_meta": {
+    "vendor": "OpenSolar (HSEnergy Residential)",
+    "type": "residential",
+    "pages": 18,
+    "verified": "2026-07-31",
+    "method": "read by hand from the page-tagged text; cashflow row cross-checked against the monthly table column sums; 2050 cumulative (79,440) corroborates os_25yr (79,441)"
+  },
+  "_traps": {
+    "summary_tiles": "p3 renders each figure ABOVE its caption: 6.44 kWp / System Size, 15.3% / Rate of Return, £79,441 / Estimated net savings, £18,384 / Total System Price.",
+    "system_cost": "p11 reads '£97,825 Utility Bill Savings - £18,384 Net System Cost = £79,441 Estimated Net Savings'.",
+    "solar_savings": "p11 cashflow row '2026 13,000 4,561 3,385 1,229 2,156 18,384 0 (16228) (16228)', column 5.",
+    "annual_usage": "13,000 kWh. Unusually high relative to 4,561 kWh generation. This is genuine (large property), not a mis-read, and it is the figure that makes the 'usage x 0.28 > solar_savings' check pass.",
+    "battery_kwh": "32.62 is the stated system total (7 x FE-HV-EQS-4800 at 4.66 kWh each). Do NOT also add the modules, and do not take a per-module figure.",
+    "inverter_kw": "GENUINELY ABSENT. The solution lists panels, a FoxESS EQ battery, Tigo optimisers and an SPD. No inverter is itemised anywhere in the document.",
+    "os_payback": "'Payback 7 years, 5 months' must convert to 7.42 decimal years.",
+    "os_25yr": "£79,441 net competes with '£97,825 Lifetime Bill Savings' (gross)."
+  },
+  "fields": {
+    "customer_name": "Avril & Mike Kalms",
+    "customer_address": "April Cottage, Beech Hill",
+    "pv_size": 6.44,
+    "battery_kwh": 32.62,
+    "inverter_kw": null,
+    "annual_gen": 4561,
+    "annual_usage": 13000,
+    "system_cost": 18384,
+    "solar_savings": 2156,
+    "export_kwh": 1009,
+    "export_pct": 22,
+    "os_payback": 7.42,
+    "os_25yr": 79441,
+    "os_roi": 15.3
+  }
+}

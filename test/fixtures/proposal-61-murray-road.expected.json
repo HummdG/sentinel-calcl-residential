@@ -1,0 +1,32 @@
+{
+  "_meta": {
+    "vendor": "OpenSolar (HSEnergy Residential)",
+    "type": "residential",
+    "pages": 20,
+    "verified": "2026-10-08",
+    "method": "read by hand from the page-tagged text; export summed from the p9 monthly column and corroborated by '327% Export to grid' on p5 (1,777 x 3.27 = 5,811)"
+  },
+  "_traps": {
+    "battery_kwh": "p4 lists TWO battery lines and no total: '23.3kWh of Battery Storage' (5 x FE-HV-EQS-4800) and '4.66kWh of Battery Storage' (1 x FE-HV-EQM-4800). The answer is their sum, 27.96, which the p6 'assumed usable capacity' of 25.16 kWh (90%) corroborates. The model quotes both lines joined by ' ... '.",
+    "export_kwh": "5,809 kWh EXCEEDS the 1,777 kWh generated. Genuine: a 28 kWh battery on Octopus Flux exports grid-charged energy, and p5 states '327% Export to grid'.",
+    "export_pct": "327, above 100.",
+    "os_payback": "'Payback 9 years, 7 months' converts to 9.58. 'Discounted Payback Period 15 Years 11 Months' is the wrong figure.",
+    "os_roi": "9.4%, not the '164% Total Return on Investment'."
+  },
+  "fields": {
+    "customer_name": "Nassar Khalil",
+    "customer_address": "61 Murray Road",
+    "pv_size": 2.3,
+    "battery_kwh": 27.96,
+    "inverter_kw": 6,
+    "annual_gen": 1777,
+    "annual_usage": 7700,
+    "system_cost": 15417.32,
+    "solar_savings": 1635,
+    "export_kwh": 5809,
+    "export_pct": 327,
+    "os_payback": 9.58,
+    "os_25yr": 25270,
+    "os_roi": 9.4
+  }
+}
