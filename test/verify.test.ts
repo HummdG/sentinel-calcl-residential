@@ -465,3 +465,61 @@ describe('the Octopus Flux regression', () => {
     expect(result.provenance.find((p) => p.field === 'annual_usage')!.status).toBe('verified');
   });
 });
+
+describe('quotes from a model reading the PDF as laid out', () => {
+  // When the model reads the PDF itself it quotes the page in visual order. A tile that
+  // pdf.js linearises as "£79,441" above "Estimated Net Savings" is quoted label-first,
+  // and "33.75 kW" comes back as "33.75kW". These are the quotes Claude Haiku 4.5 gave
+  // on the real proposals, and all of them were rejected before grounding allowed for it.
+  const ground = (slug: string, field: keyof ExtractionClaims, value: number, page: number, evidence: string) => {
+    const fx = fixtures.find((f) => f.slug.includes(slug))!;
+    const claims = perfectClaims(fx);
+    claims[field] = { value, page, evidence } as never;
+    return verifyExtraction(claims, fx.text).provenance.find((p) => p.field === field)!;
+  };
+
+  it('accepts a label quoted before a value printed above it', () => {
+    expect(ground('april-cottage', 'os_25yr', 79441, 11, 'Estimated Net Savings £79,441').status).toBe('verified');
+    expect(ground('april-cottage', 'os_roi', 15.3, 11, 'Rate of Return on Investment 15.3%').status).toBe('verified');
+  });
+
+  it('accepts a figure quoted without the space pdf.js puts before its unit', () => {
+    expect(ground('river-house', 'pv_size', 33.75, 3, '33.75kW\nSystem Size').status).toBe('verified');
+    expect(ground('river-house', 'annual_gen', 28087, 3, '28,087kWh\nEstimated Annual\nSolar Generation').status).toBe('verified');
+  });
+
+  it('still refutes a figure that is not on the page', () => {
+    expect(ground('april-cottage', 'os_25yr', 97441, 11, 'Estimated Net Savings £97,441').status).toBe('unverified');
+    expect(ground('river-house', 'pv_size', 43.75, 3, '43.75kW\nSystem Size').status).toBe('unverified');
+  });
+
+  it('does not ground a figure on the tail of a longer one', () => {
+    // "3.75" is inside "33.75" on that page; it must not count as printed.
+    expect(ground('river-house', 'pv_size', 3.75, 3, '3.75kW System Size').status).toBe('unverified');
+  });
+});
+
+describe('quotes of a cashflow-table cell', () => {
+  it('accepts year, column header and value quoted together', () => {
+    // pdf.js breaks the header over four lines and prints the row as bare numbers.
+    const fx = fixtures.find((f) => f.slug.includes('blackberry'))!;
+    const claims = perfectClaims(fx);
+    claims.solar_savings = {
+      value: 1443,
+      page: 11,
+      evidence: '2026 Annual Savings (from new system) (£) 1,443',
+    } as never;
+    const p = verifyExtraction(claims, fx.text).provenance.find((x) => x.field === 'solar_savings')!;
+    expect(p.status).toBe('verified');
+  });
+
+  it('does not ground a figure by gluing neighbouring cells together', () => {
+    // The row reads "-229 1,443". Joined up that would contain "2291443", so "2291" must
+    // not be found just because spacing was ignored.
+    const fx = fixtures.find((f) => f.slug.includes('blackberry'))!;
+    const claims = perfectClaims(fx);
+    claims.solar_savings = { value: 2291, page: 11, evidence: 'Annual Savings 2,291' } as never;
+    const p = verifyExtraction(claims, fx.text).provenance.find((x) => x.field === 'solar_savings')!;
+    expect(p.status).toBe('unverified');
+  });
+});

@@ -1,4 +1,5 @@
-// Tier 2: stronger model, with rendered page images alongside the text.
+// Tier 2: stronger model. It re-reads the same uploaded PDF; on the text fallback it gets
+// rendered page images alongside the text instead.
 //
 // Reached in two cases:
 //   1. Tier 1 returned `escalate`. A quote could not be grounded, or the figures failed

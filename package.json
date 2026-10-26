@@ -19,6 +19,7 @@
     "jspdf": "^2.5.2",
     "next": "^15.1.6",
     "nodemailer": "^6.9.16",
+    "pdf-lib": "^1.17.1",
     "react": "^19.0.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^19.0.0",

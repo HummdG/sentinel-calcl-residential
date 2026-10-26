@@ -1,4 +1,5 @@
-// Tier 1: cheap model, document text only.
+// Tier 1: cheap model. It reads the uploaded proposal PDF (see ./upload), or the pdf.js
+// text when the PDF could not be uploaded.
 //
 // Returns as soon as the fast model has been verified, so the surveyor sees most fields
 // in a few seconds. If a verification gate failed, `escalate` is set and the client calls

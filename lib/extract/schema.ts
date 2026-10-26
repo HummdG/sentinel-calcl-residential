@@ -41,7 +41,7 @@ export const INTERNAL_ONLY: readonly FieldName[] = ['export_pct'];
 export interface Claim<T> {
   /** null means "not stated in this document". A correct answer, not a failure. */
   value: T | null;
-  /** 1-based page number matching the "=== PAGE n ===" tags. */
+  /** 1-based page number in the full proposal. */
   page: number | null;
   /** Verbatim span copied from that page. Checked against the source by verify.ts. */
   evidence: string | null;
@@ -58,47 +58,11 @@ export type ExtractionClaims = Record<NumericField, Claim<number>> &
     export_monthly?: number[];
   };
 
-// Structured outputs cap a schema at 16 union-typed parameters, because each one
-// multiplies compilation cost. Making all three properties of all 14 fields nullable
-// comes to 42 and is rejected outright.
-//
-// Only `value` spends one of those slots: null there is a real answer ("not stated in
-// this document") that has to be distinguishable from 0. `page` and `evidence` carry
-// sentinels instead. 0 and "". Which toClaim() in anthropic.ts already normalises back
-// to null. That is 14 unions, inside the limit, with no loss of meaning.
-const nullableValue = (type: 'number' | 'string') => ({
-  anyOf: [{ type }, { type: 'null' as const }],
-  description:
-    'The value, or null if the document does not state it. Never guess, and never substitute 0 for an absent value.',
-});
-
-function claimSchema(type: 'number' | 'string', description: string) {
-  return {
-    type: 'object',
-    description,
-    properties: {
-      value: nullableValue(type),
-      page: {
-        type: 'integer',
-        description:
-          'Page number from the "=== PAGE n ===" tag this was read from. Use 0 when the value is null.',
-      },
-      evidence: {
-        type: 'string',
-        description:
-          'Short verbatim quote from that page, copied exactly, including the label. Use an empty string when the value is null.',
-      },
-    },
-    required: ['value', 'page', 'evidence'],
-    additionalProperties: false,
-  };
-}
-
 /** One-line semantic definition per field. Full disambiguation lives in prompt.ts. */
 const FIELD_DESCRIPTIONS: Record<FieldName, string> = {
   customer_name: 'The customer the proposal is addressed to, fullest form available.',
   customer_address:
-    'House name/number and street of the installation address only. No town, county or postcode.',
+    'House name/number and street of the installation address only: stop after the street name and drop the town, county and postcode that follow it ("22 Varey Road, Worthing, BN13 3SN" is "22 Varey Road").',
   pv_size: 'Total installed PV array capacity in kWp (DC panel rating, not inverter AC).',
   battery_kwh: 'Total rated battery storage for the whole system, in kWh.',
   inverter_kw: 'Total inverter rated AC power in kW.',
@@ -116,6 +80,11 @@ const FIELD_DESCRIPTIONS: Record<FieldName, string> = {
 
 
 
+/** The field definitions as a prompt list. They used to live in the schema itself. */
+export function fieldDefinitions(): string {
+  return ALL_FIELDS.map((f) => `- ${f}: ${FIELD_DESCRIPTIONS[f]}`).join('\n');
+}
+
 /**
  * The JSON Schema passed as `output_config.format`.
  *
@@ -124,25 +93,65 @@ const FIELD_DESCRIPTIONS: Record<FieldName, string> = {
  * Opus 5 and cannot be turned off above `high` effort. Forced `tool_choice` carries no
  * such guarantee, and a turn that answers in prose instead of calling the tool would fail
  * open. Exactly the silent failure this rebuild exists to remove.
+ *
+ * The claims are ONE list of identically shaped entries, each naming its field, rather
+ * than one object property per field. The API compiles the schema into a grammar and caps
+ * its size: fourteen per-field objects (each with its own description and, originally, a
+ * "number or null" union) compiled for Claude Haiku 4.5 but were rejected by Claude Opus 5
+ * and Opus 5.5 ("The compiled grammar is too large"), so every escalation failed. A list
+ * of one shape compiles small whatever the field count.
+ *
+ * In that shape:
+ *   - `stated: false` is "not in this document", a real answer kept distinct from 0.
+ *   - `value` is always a string; toClaim() in anthropic.ts parses the numeric fields.
+ *   - `page` 0 and `evidence` "" are the sentinels for a field that is not stated.
+ * The grammar cannot force one entry per field. toClaims() treats a missing entry as not
+ * stated, which the verifier then reports as missing rather than inventing a value.
  */
 export function extractionSchema() {
-  const properties: Record<string, unknown> = {};
-  for (const f of TEXT_FIELDS) properties[f] = claimSchema('string', FIELD_DESCRIPTIONS[f]);
-  for (const f of NUMERIC_FIELDS) properties[f] = claimSchema('number', FIELD_DESCRIPTIONS[f]);
-  // A plain array, not a nullable union, so it does not spend one of the 16 union slots.
-  properties.export_monthly = {
-    type: 'array',
-    items: { type: 'number' },
-    description:
-      'The twelve monthly "exported to grid" figures, January to December, copied exactly from the monthly table. Empty array if the document has no such table.',
-  };
-
   return {
     type: 'json_schema' as const,
     schema: {
       type: 'object' as const,
-      properties,
-      required: [...ALL_FIELDS, 'export_monthly'],
+      properties: {
+        fields: {
+          type: 'array',
+          description: 'Exactly one entry for every field listed in the instructions.',
+          items: {
+            type: 'object',
+            properties: {
+              field: { type: 'string', enum: [...ALL_FIELDS] },
+              stated: {
+                type: 'boolean',
+                description: 'false if the document does not state this figure. Never guess.',
+              },
+              value: {
+                type: 'string',
+                description:
+                  'The figure as a plain number ("787", "7.42") or the text. Empty when stated is false.',
+              },
+              page: {
+                type: 'integer',
+                description: 'Page number in the full proposal it was read from. 0 when not stated.',
+              },
+              evidence: {
+                type: 'string',
+                description:
+                  'Short verbatim quote from that page, including the label. Empty when not stated.',
+              },
+            },
+            required: ['field', 'stated', 'value', 'page', 'evidence'],
+            additionalProperties: false,
+          },
+        },
+        export_monthly: {
+          type: 'array',
+          items: { type: 'number' },
+          description:
+            'The twelve monthly "exported to grid" figures, January to December, copied exactly from the monthly table. Empty array if the document has no such table.',
+        },
+      },
+      required: ['fields', 'export_monthly'],
       additionalProperties: false,
     },
   };

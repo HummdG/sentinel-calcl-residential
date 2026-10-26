@@ -4,9 +4,15 @@
 // whether page images are attached, so the auth, rate limiting, validation and response
 // shaping all live here rather than being written twice.
 
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
 import { getExtractionConfig } from '../config';
-import { extractFields, type PageImage } from './anthropic';
+import {
+  FILE_ID_RE,
+  deleteFiles,
+  extractFields,
+  type PageImage,
+  type PdfDocumentRef,
+} from './anthropic';
 import { verifyExtraction } from './verify';
 import { NUMERIC_FIELDS, TEXT_FIELDS } from './schema';
 import type { ExtractedFields, ParsedPdfResponse } from '../types';
@@ -21,12 +27,12 @@ import type { ExtractedFields, ParsedPdfResponse } from '../types';
  */
 const hits = new Map<string, number[]>();
 
-function rateLimited(ip: string, perHour: number): boolean {
+function rateLimited(key: string, perHour: number): boolean {
   const now = Date.now();
   const cutoff = now - 3_600_000;
-  const recent = (hits.get(ip) ?? []).filter((t) => t > cutoff);
+  const recent = (hits.get(key) ?? []).filter((t) => t > cutoff);
   recent.push(now);
-  hits.set(ip, recent);
+  hits.set(key, recent);
 
   // Opportunistic cleanup so the map cannot grow without bound on a warm instance.
   if (hits.size > 500) {
@@ -42,8 +48,62 @@ function clientIp(req: Request): string {
 }
 
 export interface TierRequest {
+  /** pdf.js text of the proposal. Sent to the model only when `documents` is absent. */
   text: string;
+  /** The uploaded proposal (see /api/parse-pdf/upload). The model reads this when given. */
+  documents?: PdfDocumentRef[];
   pageImages?: PageImage[];
+}
+
+/**
+ * Checks shared by every extraction route: configured, authorised, not rate limited.
+ * Returns the response to send when the request must stop here, otherwise null.
+ *
+ * `bucket` separates limits: one proposal costs an upload per part plus one or two
+ * extraction calls, and those should not eat into each other's allowance.
+ */
+export function guard(req: Request, bucket: string, perHourFactor = 1): NextResponse | null {
+  const cfg = getExtractionConfig();
+
+  if (!cfg.apiKey) {
+    return NextResponse.json(
+      { error: 'Extraction is not configured on this server (ANTHROPIC_API_KEY).' },
+      { status: 503 }
+    );
+  }
+
+  if (cfg.sharedSecret && req.headers.get('x-extract-key') !== cfg.sharedSecret) {
+    return NextResponse.json({ error: 'Not authorised.' }, { status: 401 });
+  }
+
+  if (rateLimited(`${bucket}:${clientIp(req)}`, cfg.rateLimitPerHour * perHourFactor)) {
+    return NextResponse.json(
+      { error: 'Too many extractions from this address. Try again shortly.' },
+      { status: 429 }
+    );
+  }
+  return null;
+}
+
+/** Accept only well-formed references to uploaded parts; anything else is dropped. */
+function parseDocuments(raw: unknown): PdfDocumentRef[] | undefined {
+  if (!Array.isArray(raw) || raw.length === 0 || raw.length > 10) return undefined;
+  const docs: PdfDocumentRef[] = [];
+  for (const d of raw as Record<string, unknown>[]) {
+    const { fileId, firstPage, lastPage } = d ?? {};
+    if (
+      typeof fileId !== 'string' ||
+      !FILE_ID_RE.test(fileId) ||
+      !Number.isInteger(firstPage) ||
+      !Number.isInteger(lastPage) ||
+      (firstPage as number) < 1 ||
+      (lastPage as number) < (firstPage as number)
+    ) {
+      return undefined;
+    }
+    docs.push({ fileId, firstPage: firstPage as number, lastPage: lastPage as number });
+  }
+  return docs;
 }
 
 function toFields(values: Record<string, number | string | null>): ExtractedFields {
@@ -83,24 +143,8 @@ export async function handleExtraction(
   tier: 'primary' | 'escalation'
 ): Promise<NextResponse> {
   const cfg = getExtractionConfig();
-
-  if (!cfg.apiKey) {
-    return NextResponse.json(
-      { error: 'Extraction is not configured on this server (ANTHROPIC_API_KEY).' },
-      { status: 503 }
-    );
-  }
-
-  if (cfg.sharedSecret && req.headers.get('x-extract-key') !== cfg.sharedSecret) {
-    return NextResponse.json({ error: 'Not authorised.' }, { status: 401 });
-  }
-
-  if (rateLimited(clientIp(req), cfg.rateLimitPerHour)) {
-    return NextResponse.json(
-      { error: 'Too many extractions from this address. Try again shortly.' },
-      { status: 429 }
-    );
-  }
+  const stop = guard(req, 'extract');
+  if (stop) return stop;
 
   let body: TierRequest;
   try {
@@ -111,10 +155,11 @@ export async function handleExtraction(
 
   const text = typeof body.text === 'string' ? body.text : '';
   const pageImages = Array.isArray(body.pageImages) ? body.pageImages : undefined;
+  const documents = parseDocuments(body.documents);
 
   // The escalation tier can work from images alone. That is the path a scanned proposal
   // takes, where there is no text layer at all and tier 1 was skipped entirely.
-  if (text.trim() === '' && !pageImages?.length) {
+  if (text.trim() === '' && !pageImages?.length && !documents) {
     return NextResponse.json(
       { error: 'Could not read this PDF. Please enter the values manually.' },
       { status: 400 }
@@ -128,12 +173,17 @@ export async function handleExtraction(
       (pageImages ?? []).reduce((n, i) => n + (i.data?.length ?? 0) * 0.75, 0) / 1024
     );
     console.log(
-      `[extract] tier=${tier} model=${model} text=${text.length}ch images=${pageImages?.length ?? 0} (${kb}KB) pages=[${(pageImages ?? []).map((i) => i.page).join(',')}]`
+      `[extract] tier=${tier} model=${model} text=${text.length}ch documents=${documents?.length ?? 0} images=${pageImages?.length ?? 0} (${kb}KB) pages=[${(pageImages ?? []).map((i) => i.page).join(',')}]`
     );
   }
 
   try {
-    const result = await extractFields(text.slice(0, cfg.maxChars), { model, pageImages });
+    const result = await extractFields(text.slice(0, cfg.maxChars), {
+      model,
+      documents,
+      pageImages: documents ? undefined : pageImages,
+    });
+    // Grounding always runs against the pdf.js text, even when the model read the PDF.
     const verified = verifyExtraction(result.claims, text);
 
     const fields = toFields(verified.values);
@@ -142,6 +192,13 @@ export async function handleExtraction(
 
     // Only the cheap tier asks for a retry. Escalation is the last stop.
     const escalate = tier === 'primary' && verified.escalate;
+
+    // Nothing will read the uploaded proposal again, so delete it (it carries the
+    // customer's name and address). After the response, so the surveyor does not wait.
+    // The browser also asks for this in a finally; deleting twice is harmless.
+    if (documents && !escalate) {
+      after(() => deleteFiles(documents.map((d) => d.fileId)));
+    }
 
     const payload: ParsedPdfResponse = {
       fields,

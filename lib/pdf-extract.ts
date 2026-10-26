@@ -1,9 +1,9 @@
 // CLIENT-SIDE PDF text extraction (unpdf / bundled pdf.js).
 //
-// The PDF never leaves the browser: we extract text here and POST only the small
-// text payload to /api/parse-pdf. This sidesteps Vercel's ~4.5 MB request-body
-// limit and keeps the model call server-side. Pages are tagged "=== PAGE n ===" so
-// the extractor can cite a page number and the verifier can look that page back up.
+// The model normally reads the PDF itself (uploaded via /api/parse-pdf/upload). This text
+// is still extracted in the browser because the verifier needs it: every quote the model
+// gives is checked against it. It is also what the model reads when the PDF could not be
+// uploaded. Pages are tagged "=== PAGE n ===" so a cited page can be looked back up.
 //
 // Text hygiene and tagging live in lib/pdf-text.ts, shared with scripts/make-fixtures.ts
 // so scoring fixtures are byte-identical to what this function produces.

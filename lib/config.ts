@@ -87,7 +87,7 @@ export interface ExtractionConfig {
 export function getExtractionConfig(): ExtractionConfig {
   return {
     apiKey: process.env.ANTHROPIC_API_KEY ?? '',
-    primaryModel: process.env.EXTRACT_MODEL_PRIMARY?.trim() || 'claude-haiku-4-5',
+    primaryModel: process.env.EXTRACT_MODEL_PRIMARY?.trim() || 'claude-haiku-5-5',
     escalationModel: process.env.EXTRACT_MODEL_ESCALATION?.trim() || 'claude-opus-5',
     maxChars: envInt(process.env.EXTRACT_MAX_CHARS, 200000),
     sharedSecret: process.env.EXTRACT_SHARED_SECRET ?? '',
