@@ -11,13 +11,25 @@
 //   ANTHROPIC_API_KEY=sk-... node scripts/score-extraction.ts
 //   ANTHROPIC_API_KEY=sk-... node scripts/score-extraction.ts --model claude-opus-5
 //   ANTHROPIC_API_KEY=sk-... node scripts/score-extraction.ts --only varey
+//   ANTHROPIC_API_KEY=sk-... node scripts/score-extraction.ts --pdf
+//
+// --pdf scores what production does: the original PDF (from the repo root) is split like
+// the browser splits it, uploaded through the Files API, and the model reads the PDF.
+// The cached text is then used only for evidence grounding. Without --pdf the model reads
+// the cached text, which is the fallback path.
 //
 // Requires Node >= 22 (runs TypeScript directly via type stripping).
 
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { extractFields } from '../lib/extract/anthropic';
+import { splitPdf } from '../lib/pdf-split';
+import {
+  deleteFiles,
+  extractFields,
+  uploadPdf,
+  type PdfDocumentRef,
+} from '../lib/extract/anthropic';
 import { verifyExtraction } from '../lib/extract/verify';
 import { ALL_FIELDS, INTERNAL_ONLY, type FieldName } from '../lib/extract/schema';
 
@@ -29,8 +41,24 @@ function arg(name: string, fallback?: string): string | undefined {
   return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
 }
 
-const MODEL = arg('model', 'claude-haiku-4-5')!;
+const MODEL = arg('model', 'claude-haiku-5-5')!;
 const ONLY = arg('only');
+const PDF_MODE = process.argv.includes('--pdf');
+const REPO_ROOT = join(here, '..', '..');
+
+/** Fixture slug -> original PDF in the repo root, by make-fixtures' slug rule. */
+function pdfFor(slug: string): string | null {
+  const slugify = (f: string) =>
+    f
+      .replace(/\.pdf$/i, '')
+      .replace(/[^a-zA-Z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .toLowerCase();
+  const hit = readdirSync(REPO_ROOT).find(
+    (f) => f.toLowerCase().endsWith('.pdf') && slugify(f) === slug
+  );
+  return hit ? join(REPO_ROOT, hit) : null;
+}
 
 // Per-field comparison tolerance. Money and kWh are integers in the source documents, so
 // they must match exactly once rounded; ratings and rates carry a decimal.
@@ -89,7 +117,7 @@ if (fixtures.length === 0) {
 
 const scored: FieldName[] = ALL_FIELDS.filter((f) => !INTERNAL_ONLY.includes(f));
 
-console.log(`\nModel: ${MODEL}`);
+console.log(`\nModel: ${MODEL}  (${PDF_MODE ? 'reading the PDF' : 'reading extracted text'})`);
 console.log(`Fixtures: ${fixtures.length}\n`);
 
 let totalCorrect = 0;
@@ -107,12 +135,30 @@ for (const slug of fixtures) {
   process.stdout.write(`${slug} (${_meta.type}) ... `);
 
   let result;
+  let documents: PdfDocumentRef[] | undefined;
+  const started = Date.now();
   try {
-    result = await extractFields(text, { model: MODEL });
+    if (PDF_MODE) {
+      const path = pdfFor(slug);
+      if (!path) throw new Error('original PDF not found in the repo root');
+      const parts = await splitPdf(new Uint8Array(readFileSync(path)));
+      documents = await Promise.all(
+        parts.map(async (p) => ({
+          fileId: await uploadPdf(p.bytes),
+          firstPage: p.firstPage,
+          lastPage: p.lastPage,
+        }))
+      );
+    }
+    result = await extractFields(text, { model: MODEL, documents });
   } catch (e) {
     console.log(`FAILED: ${e instanceof Error ? e.message : String(e)}`);
     continue;
+  } finally {
+    if (documents) await deleteFiles(documents.map((d) => d.fileId));
   }
+  const seconds = ((Date.now() - started) / 1000).toFixed(1);
+  const partNote = documents && documents.length > 1 ? `  [${documents.length} parts]` : '';
 
   const verified = verifyExtraction(result.claims, text);
   totalCost += result.costUsd;
@@ -128,7 +174,7 @@ for (const slug of fixtures) {
       failuresByField.set(f, (failuresByField.get(f) ?? 0) + 1);
       const p = verified.provenance.find((x) => x.field === f);
       rows.push(
-        `      ${MARK[verdict].padEnd(7)} ${f.padEnd(17)} got ${JSON.stringify(verified.values[f] ?? null)}  want ${JSON.stringify(want[f] ?? null)}${p?.note ? `   [${p.note}]` : ''}`
+        `      ${MARK[verdict].padEnd(7)} ${f.padEnd(17)} got ${JSON.stringify(verified.values[f] ?? null)}  want ${JSON.stringify(want[f] ?? null)}${p?.note ? `   [${p.note}]` : ''}${verdict === 'wrong' || verdict === 'hallucinated' ? `  p${p?.page} quote=${JSON.stringify(p?.evidence)}` : ''}`
       );
     }
   }
@@ -137,7 +183,7 @@ for (const slug of fixtures) {
   totalFields += scored.length;
 
   console.log(
-    `${correct}/${scored.length}  ${verified.escalate ? 'ESCALATE' : 'clean   '}  $${result.costUsd.toFixed(4)}  (${result.usage.input} in / ${result.usage.output} out)`
+    `${correct}/${scored.length}  ${verified.escalate ? 'ESCALATE' : 'clean   '}  $${result.costUsd.toFixed(4)}  (${result.usage.input} in / ${result.usage.output} out)  ${seconds}s${partNote}`
   );
   rows.forEach((r) => console.log(r));
 
@@ -147,7 +193,7 @@ for (const slug of fixtures) {
   verified.provenance
     .filter((p) => p.status === 'unverified')
     .forEach((p) =>
-      console.log(`      rejected ${p.field.padEnd(17)} ${JSON.stringify(p.value)}  [${p.note}]`)
+      console.log(`      rejected ${p.field.padEnd(17)} ${JSON.stringify(p.value)}  [${p.note}]  p${p.page} quote=${JSON.stringify(p.evidence)}`)
     );
 
   if (verified.warnings.length) {

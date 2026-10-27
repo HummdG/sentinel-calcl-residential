@@ -77,6 +77,52 @@ function norm(s: string): string {
 }
 
 /**
+ * Drop everything but letters, digits, '.' and '%', so spacing and line breaks vanish.
+ * Whitespace between two figures becomes '|' instead: a table row "-229 1,443" must stay
+ * two numbers, not become "-2291443".
+ */
+const squash = (normalised: string) =>
+  normalised.replace(/(\d)\s+(?=\d)/g, '$1|').replace(/[^a-z0-9.%|]+/g, '');
+
+/**
+ * Cut a normalised quote into the pieces that must each appear on the page: runs of
+ * label words, and figures together with the unit printed against them. "estimated net
+ * savings 79441" -> ["estimatednetsavings", "79441"]; "10kwh of battery storage" ->
+ * ["10kwh", "ofbatterystorage"]. Keeping the unit on its figure is what stops an invented
+ * "10kWh" being grounded by some unrelated 10 elsewhere on the page.
+ */
+function pieces(normalised: string): { text: string; numeric: boolean }[] {
+  const out: { text: string; numeric: boolean }[] = [];
+  for (const word of normalised.split(/\s+/)) {
+    const w = squash(word);
+    if (!w) continue;
+    const numeric = /^\d/.test(w);
+    const last = out[out.length - 1];
+    if (last && !numeric && !last.numeric) last.text += w;
+    else out.push({ text: w, numeric });
+  }
+  return out;
+}
+
+/**
+ * Does `piece` occur in the squashed page text as a whole figure? "3.75" must not match
+ * inside "33.75", nor "15" inside "15.3".
+ */
+function pieceOnPage(piece: { text: string; numeric: boolean }, page: string): boolean {
+  if (!piece.numeric) return page.includes(piece.text);
+  let from = 0;
+  for (;;) {
+    const at = page.indexOf(piece.text, from);
+    if (at < 0) return false;
+    const end = at + piece.text.length;
+    const cleanStart = at === 0 || !/[0-9.]/.test(page[at - 1]);
+    const cleanEnd = !/[0-9]/.test(page[end] ?? '') && !/^\.\d/.test(page.slice(end, end + 2));
+    if (cleanStart && cleanEnd) return true;
+    from = at + 1;
+  }
+}
+
+/**
  * Does the model's quote actually appear on the page it cited?
  *
  * Three outcomes, and the distinction between the last two is load-bearing:
@@ -126,9 +172,20 @@ function evidenceHolds(
     .map(norm)
     .filter((f) => f.length >= 4);
   if (fragments.length === 0) return { state: 'refuted', note: 'no source text quoted' };
+
+  // A model reading the PDF quotes the page as laid out: "Estimated Net Savings £79,441"
+  // for a tile where pdf.js emits "£79,441" on the line ABOVE "Estimated Net Savings", and
+  // "33.75kW" where pdf.js has "33.75 kW". Both are faithful quotes that no contiguous
+  // match against the pdf.js text can find. So a quote also holds when each of its pieces
+  // (a run of label words, or a figure with its unit) is on the page, ignoring spacing,
+  // with label and figure allowed in either order. That still refutes what grounding
+  // exists to catch: a figure, or a figure-and-unit, that is not printed on the page.
+  const quotePieces = fragments.flatMap(pieces);
   const holdsOn = (text: string) => {
     const hay = norm(text);
-    return fragments.every((f) => hay.includes(f));
+    if (fragments.every((f) => hay.includes(f))) return true;
+    const flat = squash(hay);
+    return quotePieces.length > 0 && quotePieces.every((p) => pieceOnPage(p, flat));
   };
 
   if (holdsOn(body)) return { state: 'held' };

@@ -18,11 +18,18 @@
 // vs the system total, discounted vs simple payback, rate of return vs total return. Those
 // are judgement calls the model has to get right, so they keep their sentence.
 
-export const SYSTEM_PROMPT = `You extract structured data from UK solar PV and battery proposals. These are produced by OpenSolar, EasyPV and other vendor software, so layout, section names and wording vary. Identify each value by what it MEANS, not by matching a label you expect.
+import { fieldDefinitions } from './schema';
 
-The document is supplied as text with "=== PAGE n ===" markers. It is a linearisation of a graphical page, so reading order is unreliable: a figure is often rendered ABOVE its caption rather than after it, and table headers are frequently separated from their data.
+const INTRO = `You extract structured data from UK solar PV and battery proposals. These are produced by OpenSolar, EasyPV and other vendor software, so layout, section names and wording vary. Identify each value by what it MEANS, not by matching a label you expect.`;
 
-Return every field as an object with three properties:
+// How the document reaches the model. The PDF form is the default: the model sees each
+// page as laid out, so a figure printed above its caption or a table column is read
+// where it sits. The text form is the fallback for a PDF that could not be uploaded.
+const TEXT_INPUT = `The document is supplied as text with "=== PAGE n ===" markers. It is a linearisation of a graphical page, so reading order is unreliable: a figure is often rendered ABOVE its caption rather than after it, and table headers are frequently separated from their data.`;
+
+const PDF_INPUT = `The proposal is attached as a PDF, possibly split into consecutive parts, each titled with the page range it covers. Read figures from the page as it is laid out: a value belongs to the label or table column it sits under or beside, not to whatever text happens to come next. Page numbers are always the page in the FULL proposal, so a part titled "pages 11-20" starts at page 11.`;
+
+const RULES = `Return every field as an object with three properties:
   value:    the figure, or null if the document does not state it
   page:     the page number you read it from, or 0 when the value is null
   evidence: a short verbatim quote from that page, copied exactly, including the label
@@ -32,6 +39,12 @@ Rules:
 - Numbers are plain: no currency symbols, thousands separators, units or % signs. "11.9%" is 11.9, not 0.119. "£11,319.30" is 11319.3.
 - Some answers are derived rather than printed. When you convert units ("7 years, 5 months" to 7.42), sum a monthly series or several equipment lines into a total, or trim an address down to house and street, quote the SOURCE text you worked from: the "Payback 7 years, 5 months" line, one of the monthly rows, or the full address line. The quote must be text that appears in the document; it does not have to contain the final number.
 - 0 is a real answer when the document states zero (e.g. "0% Export to grid"). Use 0 then, and null only when the figure is genuinely absent.`;
+
+export type InputMode = 'pdf' | 'text';
+
+export function systemPrompt(mode: InputMode): string {
+  return `${INTRO}\n\n${mode === 'pdf' ? PDF_INPUT : TEXT_INPUT}\n\n${RULES}`;
+}
 
 export const FIELD_GUIDANCE = `Field notes. These cover cases where several figures in the document are each plausible:
 
@@ -55,6 +68,11 @@ export const FIELD_GUIDANCE = `Field notes. These cover cases where several figu
 
 - customer_address: house name/number and street only. From "1 Blackberry Drive, Haywards Heath, RH16 2GF" return "1 Blackberry Drive". From "April Cottage, Beech Hill, Headley Down, GU35 8EQ" return "April Cottage, Beech Hill".`;
 
+/** What to extract: every field and its definition, then the disambiguation notes. */
+export function fieldInstructions(): string {
+  return `Report one entry for each of these fields:\n${fieldDefinitions()}\n\n${FIELD_GUIDANCE}`;
+}
+
 export function buildUserPrompt(documentText: string): string {
-  return `${FIELD_GUIDANCE}\n\nDocument:\n\n${documentText}`;
+  return `${fieldInstructions()}\n\nDocument:\n\n${documentText}`;
 }
